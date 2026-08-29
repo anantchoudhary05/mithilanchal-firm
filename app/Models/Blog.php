@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class Blog extends Model
@@ -83,7 +84,7 @@ class Blog extends Model
 
             // Stamp publish date when missing on published posts.
             if ($blog->status === 'published' && blank($blog->published_at)) {
-                $blog->published_at = now();
+                $blog->published_at = Carbon::now();
             }
         });
 
