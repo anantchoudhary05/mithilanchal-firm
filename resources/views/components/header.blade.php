@@ -100,6 +100,10 @@ NAVBAR
         Contact Us
     </a>
 
+    <a href="{{ route('moonshine.login') }}" class="nav-login">
+        Login
+    </a>
+
     </nav>
 
 </div>
