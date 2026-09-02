@@ -215,6 +215,17 @@
     background: #fffdf7;
 }
 
+.blog-preview-banner {
+    background: #fff4d6;
+    border: 1px solid #e6c56a;
+    color: #5c4a12;
+    border-radius: 12px;
+    padding: 0.9rem 1.15rem;
+    margin: 0 0 1.35rem;
+    font-weight: 700;
+    text-align: center;
+}
+
 .blog-back-link {
     display: inline-flex;
     margin-bottom: 1.25rem;

@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\MoonShineUserRole;
 
-use MoonShine\Laravel\Models\MoonshineUserRole;
-use MoonShine\Laravel\Resources\ModelResource;
 use App\MoonShine\Resources\MoonShineUserRole\Pages\MoonShineUserRoleFormPage;
 use App\MoonShine\Resources\MoonShineUserRole\Pages\MoonShineUserRoleIndexPage;
+use App\Support\CmsUser;
+use MoonShine\Laravel\Models\MoonshineUserRole;
+use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\MenuManager\Attributes\Group;
 use MoonShine\MenuManager\Attributes\Order;
 use MoonShine\Support\Attributes\Icon;
+use MoonShine\Support\Enums\Ability;
 use MoonShine\Support\Enums\Action;
 use MoonShine\Support\ListOf;
 
@@ -18,7 +20,7 @@ use MoonShine\Support\ListOf;
  * @extends ModelResource<MoonshineUserRole, MoonShineUserRoleIndexPage, MoonShineUserRoleFormPage, null>
  */
 #[Icon('bookmark')]
-#[Group('moonshine::ui.resource.system', 'users', translatable: true)]
+#[Group('People')]
 #[Order(1)]
 class MoonShineUserRoleResource extends ModelResource
 {
@@ -37,6 +39,16 @@ class MoonShineUserRoleResource extends ModelResource
     public function getTitle(): string
     {
         return __('moonshine::ui.resource.role');
+    }
+
+    public function canSee(): bool
+    {
+        return CmsUser::isAdmin();
+    }
+
+    protected function isCan(Ability $ability): bool
+    {
+        return CmsUser::isAdmin();
     }
 
     protected function activeActions(): ListOf

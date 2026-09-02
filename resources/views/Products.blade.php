@@ -105,7 +105,7 @@
                 </span>
               </div>
 
-              <a href="ContactUs.html" class="product-btn">
+              <a href="{{ route('ContactUs') }}" class="product-btn">
                 Enquire Now
 
                 <i class="fa-solid fa-arrow-right"></i>
@@ -149,7 +149,7 @@
                 </span>
               </div>
 
-              <a href="ContactUs.html" class="product-btn">
+              <a href="{{ route('ContactUs') }}" class="product-btn">
                 Enquire Now
 
                 <i class="fa-solid fa-arrow-right"></i>
@@ -193,7 +193,7 @@
                 </span>
               </div>
 
-              <a href="ContactUs.html" class="product-btn">
+              <a href="{{ route('ContactUs') }}" class="product-btn">
                 Enquire Now
 
                 <i class="fa-solid fa-arrow-right"></i>
@@ -237,7 +237,7 @@
                 </span>
               </div>
 
-              <a href="ContactUs.html" class="product-btn">
+              <a href="{{ route('ContactUs') }}" class="product-btn">
                 Enquire Now
 
                 <i class="fa-solid fa-arrow-right"></i>
@@ -281,7 +281,7 @@
                 </span>
               </div>
 
-              <a href="ContactUs.html" class="product-btn">
+              <a href="{{ route('ContactUs') }}" class="product-btn">
                 Enquire Now
 
                 <i class="fa-solid fa-arrow-right"></i>
@@ -325,7 +325,7 @@
                 </span>
               </div>
 
-              <a href="ContactUs.html" class="product-btn">
+              <a href="{{ route('ContactUs') }}" class="product-btn">
                 Enquire Now
 
                 <i class="fa-solid fa-arrow-right"></i>
@@ -424,7 +424,7 @@
         </p>
 
         <div class="wholesale-buttons">
-          <a href="ContactUs.html" class="primary-btn">
+          <a href="{{ route('ContactUs') }}" class="primary-btn">
             Request a Quote
 
             <i class="fa-solid fa-arrow-right"></i>

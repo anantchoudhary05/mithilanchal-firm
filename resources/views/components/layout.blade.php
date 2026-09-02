@@ -131,6 +131,6 @@
         <span> ☎ </span>
     </a>
 
-    <script src="{{ asset('assests/js/script.js') }}"></script>
+    <script src="{{ asset('assests/js/style.js') }}"></script>
 </body>
 </html>

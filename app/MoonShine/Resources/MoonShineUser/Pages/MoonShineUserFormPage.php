@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\MoonShineUser\Pages;
 
+use App\Models\MoonshineUser;
+use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
+use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
+use App\Support\CmsRole;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password as PasswordRule;
@@ -11,11 +15,8 @@ use MoonShine\Contracts\Core\TypeCasts\DataWrapperContract;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
-use MoonShine\Laravel\Models\MoonshineUser;
 use MoonShine\Laravel\Models\MoonshineUserRole;
 use MoonShine\Laravel\Pages\Crud\FormPage;
-use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
-use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
 use MoonShine\UI\Components\Collapse;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Components\Layout\Flex;
@@ -28,9 +29,10 @@ use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Password;
 use MoonShine\UI\Fields\PasswordRepeat;
 use MoonShine\UI\Fields\Text;
+use MoonShine\UI\Fields\Textarea;
 
 /**
- * @extends FormPage<MoonShineUserResource, MoonShineUser>
+ * @extends FormPage<MoonShineUserResource, MoonshineUser>
  */
 final class MoonShineUserFormPage extends FormPage
 {
@@ -51,8 +53,9 @@ final class MoonShineUserFormPage extends FormPage
                             formatted: static fn (MoonshineUserRole $model) => $model->name,
                             resource: MoonShineUserRoleResource::class,
                         )
-                            ->creatable()
-                            ->valuesQuery(static fn (Builder $q) => $q->select(['id', 'name'])),
+                            ->valuesQuery(static fn (Builder $q) => $q->select(['id', 'name']))
+                            ->default(CmsRole::authorId())
+                            ->hint('Author can write blogs and submit them for approval. Admin has full CMS access.'),
 
                         Flex::make([
                             Text::make(__('moonshine::ui.resource.name'), 'name')
@@ -62,13 +65,16 @@ final class MoonShineUserFormPage extends FormPage
                                 ->required(),
                         ]),
 
+                        Textarea::make('Author bio', 'bio')
+                            ->hint('Used as the public author profile on blog posts when a post-level profile is empty.'),
+
                         Image::make(__('moonshine::ui.resource.avatar'), 'avatar')
                             ->disk(moonshineConfig()->getDisk())
                             ->dir(moonshineConfig()->getUserAvatarsDir())
                             ->allowedExtensions(['jpg', 'png', 'jpeg', 'gif']),
 
                         Date::make(__('moonshine::ui.resource.created_at'), 'created_at')
-                            ->format("d.m.Y")
+                            ->format('d.m.Y')
                             ->default(now()->toDateTimeString()),
                     ])->icon('user-circle'),
 
@@ -93,6 +99,7 @@ final class MoonShineUserFormPage extends FormPage
         return [
             'name' => 'required',
             'moonshine_user_role_id' => 'required',
+            'bio' => ['nullable', 'string', 'max:2000'],
             'email' => [
                 'sometimes',
                 'bail',

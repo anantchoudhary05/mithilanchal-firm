@@ -194,10 +194,8 @@ document
 
                 event.preventDefault();
 
-                const headerHeight =
-                    document.querySelector(
-                        ".header"
-                    ) ? offsetHeight || 0 : 0;
+                const header = document.querySelector(".header");
+                const headerHeight = header ? (header.offsetHeight || 0) : 0;
 
                 const targetPosition =
                     target.getBoundingClientRect().top +
@@ -249,26 +247,3 @@ document
     });
 
 
-
-/* =========================
-   CURRENT YEAR
-========================= */
-
-const yearElement =
-    document.querySelector(
-        ".footer-bottom span"
-    );
-
-
-if (yearElement) {
-
-    const currentYear =
-        new Date().getFullYear();
-
-    yearElement.innerHTML =
-        yearElement.innerHTML.replace(
-            "2026",
-            currentYear
-        );
-
-}

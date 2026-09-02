@@ -9,6 +9,12 @@
 >
     <section class="blog-detail-wrap">
         <div class="container">
+            @if (! empty($isPreview))
+                <div class="blog-preview-banner" role="status">
+                    CMS preview — visitors cannot see this page unless the post is approved and active.
+                </div>
+            @endif
+
             <a href="{{ route('blog.index') }}" class="blog-back-link">← Back to Blog</a>
 
             <article class="blog-detail-card">

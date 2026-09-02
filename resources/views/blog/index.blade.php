@@ -23,7 +23,7 @@
                                 @if ($blog->featured_image_url)
                                     <img src="{{ $blog->featured_image_url }}" alt="{{ $blog->image_alt ?: $blog->title }}">
                                 @else
-                                    <img src="{{ asset('assests/css/images/makhana.jpg') }}" alt="{{ $blog->image_alt ?: $blog->title }}">
+                                    <img src="{{ asset('assests/img/makhana main.webp') }}" alt="{{ $blog->image_alt ?: $blog->title }}">
                                 @endif
                                 <span class="blog-date-badge">
                                     {{ optional($blog->published_at ?? $blog->created_at)->format('d M, Y') }}

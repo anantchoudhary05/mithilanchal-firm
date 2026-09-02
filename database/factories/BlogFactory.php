@@ -27,6 +27,7 @@ class BlogFactory extends Factory
             'image_alt' => $title,
             'author_name' => fake()->name(),
             'author_profile' => fake()->sentence(12),
+            'author_id' => null,
             'status' => 'published',
             'content_type' => fake()->randomElement(['guide', 'news', 'case_study', 'technical', 'comparison', 'product_education']),
             'is_active' => true,

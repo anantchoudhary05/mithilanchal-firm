@@ -322,7 +322,7 @@
             </div>
           </div>
 
-          <a href="ContactUs.html" class="dark-btn">
+          <a href="{{ route('ContactUs') }}" class="dark-btn">
             Discuss Your Requirement
 
             <i class="fa-solid fa-arrow-right"></i>
@@ -403,7 +403,7 @@
           solution for you.
         </p>
 
-        <a href="ContactUs.html" class="cta-btn">
+        <a href="{{ route('ContactUs') }}" class="cta-btn">
           Get In Touch
 
           <i class="fa-solid fa-arrow-right"></i>

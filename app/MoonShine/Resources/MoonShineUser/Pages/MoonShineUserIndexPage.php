@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\MoonShineUser\Pages;
 
+use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
+use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\Laravel\Models\MoonshineUserRole;
 use MoonShine\Laravel\Pages\Crud\IndexPage;
-use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
-use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
 use MoonShine\Support\Enums\Color;
 use MoonShine\UI\Components\Table\TableBuilder;
 use MoonShine\UI\Fields\Date;
@@ -46,11 +46,15 @@ final class MoonShineUserIndexPage extends IndexPage
                 ?string $raw
             ): string => $raw ?? ''),
 
-            Date::make(__('moonshine::ui.resource.created_at'), 'created_at')
-                ->format("d.m.Y")
+            Email::make(__('moonshine::ui.resource.email'), 'email')
                 ->sortable(),
 
-            Email::make(__('moonshine::ui.resource.email'), 'email')
+            Text::make('Total posts', 'blogs_count'),
+            Text::make('Published', 'published_count'),
+            Text::make('Pending', 'pending_count'),
+
+            Date::make(__('moonshine::ui.resource.created_at'), 'created_at')
+                ->format('d.m.Y')
                 ->sortable(),
         ];
     }
@@ -71,11 +75,9 @@ final class MoonShineUserIndexPage extends IndexPage
 
     /**
      * @param  TableBuilder  $component
-     *
-     * @return TableBuilder
      */
     protected function modifyListComponent(ComponentContract $component): TableBuilder
     {
-        return $component->columnSelection();
+        return $component->columnSelection()->stickyButtons();
     }
 }

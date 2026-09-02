@@ -183,22 +183,8 @@ textarea {
     align-items: center;
     justify-content: space-between;
 }
-.nav a.nav-login {
-    margin-left: 0.5rem;
-    padding: 0.45rem 0.9rem;
-    border-radius: 999px;
-    background: #175c20;
-    color: #fff !important;
-    font-weight: 700;
-}
-
-.nav a.nav-login::after {
-    display: none;
-}
-
-.nav a.nav-login:hover {
-    background: #0c3d15;
-    color: #fff !important;
+.nav a:hover {
+    color: var(--green);
 }
 
 .brand {

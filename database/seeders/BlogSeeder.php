@@ -17,7 +17,6 @@ class BlogSeeder extends Seeder
             'author_name' => 'Mithilanchal Farms',
             'content_type' => 'guide',
             'is_featured' => true,
-            'is_sticky' => true,
             'meta_title' => 'Health Benefits of Mithila Makhana | Mithilanchal Farms',
             'meta_description' => 'Learn why premium fox nuts from Darbhanga are a protein-rich, heart-friendly snack.',
             'related_blog_ids' => $posts->take(2)->pluck('id')->all(),

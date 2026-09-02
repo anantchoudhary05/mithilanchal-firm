@@ -169,7 +169,7 @@
             We believe that when farmers grow better, communities grow stronger.
           </p>
 
-          <a href="#" class="dark-btn">
+          <a href="{{ route('ContactUs') }}" class="dark-btn">
             Learn More
             <span>→</span>
           </a>
@@ -309,7 +309,7 @@
             piece of tradition and plenty of crunch.
           </p>
 
-          <a href="#" class="primary-btn">
+          <a href="{{ route('Product') }}" class="primary-btn">
             Shop Makhana
             <span>→</span>
           </a>

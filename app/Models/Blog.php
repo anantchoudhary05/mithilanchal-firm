@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use Database\Factories\BlogFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class Blog extends Model
 {
-    /** @use HasFactory<\Database\Factories\BlogFactory> */
+    /** @use HasFactory<BlogFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -23,6 +25,7 @@ class Blog extends Model
         'image_alt',
         'author_name',
         'author_profile',
+        'author_id',
         'status',
         'content_type',
         'is_active',
@@ -82,6 +85,8 @@ class Blog extends Model
                 $blog->image_alt = $blog->title;
             }
 
+            $blog->syncAuthorDisplayFields();
+
             // Stamp publish date when missing on published posts.
             if ($blog->status === 'published' && blank($blog->published_at)) {
                 $blog->published_at = Carbon::now();
@@ -106,6 +111,111 @@ class Blog extends Model
                             ->where('published_at', '<=', now());
                     });
             });
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(MoonshineUser::class, 'author_id');
+    }
+
+    public function scopeAuthoredBy(Builder $query, int $authorId): Builder
+    {
+        return $query->where('author_id', $authorId);
+    }
+
+    public function scopePendingApproval(Builder $query): Builder
+    {
+        return $query->where('status', 'review');
+    }
+
+    public function isAwaitingApproval(): bool
+    {
+        return $this->status === 'review';
+    }
+
+    public function statusLabel(): string
+    {
+        return match ($this->status) {
+            'published' => 'Approved',
+            'review' => 'Pending',
+            'draft' => 'Draft',
+            'scheduled' => 'Scheduled',
+            default => (string) $this->status,
+        };
+    }
+
+    public function approve(): void
+    {
+        $this->status = 'published';
+        $this->is_active = true;
+
+        if (blank($this->published_at)) {
+            $this->published_at = now();
+        }
+
+        $this->save();
+    }
+
+    public function isLive(): bool
+    {
+        if (! $this->is_active) {
+            return false;
+        }
+
+        if ($this->status === 'published') {
+            return true;
+        }
+
+        return $this->status === 'scheduled'
+            && $this->published_at !== null
+            && $this->published_at->lte(now());
+    }
+
+    public function isOwnedBy(?int $userId): bool
+    {
+        return $userId !== null && (int) $this->author_id === $userId;
+    }
+
+    public function authorCanEdit(?int $userId): bool
+    {
+        return $this->isOwnedBy($userId);
+    }
+
+    public function authorCanDelete(?int $userId): bool
+    {
+        return $this->isOwnedBy($userId)
+            && in_array($this->status, ['draft', 'review'], true);
+    }
+
+    public function previewUrl(): string
+    {
+        return route('cms.blogs.preview', $this);
+    }
+
+    public function getPreviewUrlAttribute(): string
+    {
+        return blank($this->slug) ? '#' : $this->previewUrl();
+    }
+
+    public function syncAuthorDisplayFields(): void
+    {
+        if (blank($this->author_id)) {
+            return;
+        }
+
+        $author = $this->relationLoaded('author')
+            ? $this->author
+            : MoonshineUser::query()->find($this->author_id);
+
+        if ($author === null) {
+            return;
+        }
+
+        $this->author_name = $author->name;
+
+        if (blank($this->author_profile) && filled($author->bio)) {
+            $this->author_profile = $author->bio;
+        }
     }
 
     public function getRouteKeyName(): string
@@ -145,10 +255,6 @@ class Blog extends Model
     public static function clearBlogCaches(): void
     {
         Cache::forget('blogs.sitemap');
-
-        for ($page = 1; $page <= 50; $page++) {
-            Cache::forget("blogs.index.page.{$page}");
-        }
     }
 
     public static function uniqueSlug(string $base, ?int $ignoreId = null): string

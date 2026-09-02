@@ -25,11 +25,11 @@
 
             <div class="hero-buttons">
 
-                <a href="/ourstory.html" class="btn btn-primary">
+                <a href="{{ route('OurStory') }}" class="btn btn-primary">
                     Discover Our Story
                 </a>
 
-                <a href="index.html#products" class="btn btn-white">
+                <a href="{{ route('Product') }}" class="btn btn-white">
                     Explore Products
                 </a>
 
@@ -52,7 +52,7 @@
 
             <div class="about-image">
 
-                <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Foxnut_Makhana_-_Nawada_District_-_Bihar_-_1.jpg"
+                <img src="{{ asset('assests/img/makhana farming.webp') }}"
                     alt="Real makhana being roasted in Bihar">
 
                 <div class="image-label">
@@ -251,7 +251,7 @@
 
             <div class="farmer-image">
 
-                <img src="https://imgs.mongabay.com/wp-content/uploads/sites/30/2023/07/12113337/Pic-11-1200x800.jpg"
+                <img src="{{ asset('assests/img/makhana farmer.webp') }}"
                     alt="Traditional makhana harvesting in Bihar">
 
                 <div class="photo-caption">
@@ -433,7 +433,7 @@
 
                 <div class="gallery-main">
 
-                    <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Roasted_Makhana_(Foxnut).jpg"
+                    <img src="{{ asset('assests/img/roasted makhana.webp') }}"
                         alt="Roasted makhana fox nuts">
 
                     <div class="gallery-text">
@@ -453,7 +453,7 @@
 
                 <div class="gallery-small">
 
-                    <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Makhana_as_Snack_from_India.jpg"
+                    <img src="{{ asset('assests/img/premium makhana.webp') }}"
                         alt="Makhana snack from India">
 
                 </div>
@@ -461,7 +461,7 @@
 
                 <div class="gallery-small">
 
-                    <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Roasted_and_spiced_Foxnuts_(Phool_Makhana).jpg"
+                    <img src="{{ asset('assests/img/Flavored makhana.webp') }}"
                         alt="Roasted and spiced phool makhana">
 
                 </div>
@@ -552,7 +552,7 @@
 
             <div class="story-image">
 
-                <img src="https://akm-img-a-in.tosshub.com/lingo/ktak/images/story/202508/689de880e454e-makhana-033006649-16x9.jpg"
+                <img src="{{ asset('assests/img/makhana main.webp') }}"
                     alt="Freshly harvested makhana from Bihar">
 
             </div>
