@@ -228,7 +228,7 @@ img {
             rgba(2, 50, 38, .94),
             rgba(2, 50, 38, .70)
         ),
-        url("images/makhana-bg.jpg");
+        url("../img/hq-roast-bihar.jpg");
 
     background-size: cover;
     background-position: center;
@@ -545,6 +545,168 @@ img {
 
 .form-note i {
     margin-right: 5px;
+}
+
+.form-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+.form-alert i {
+    margin-top: 2px;
+}
+
+.form-alert-success {
+    background: #eef8f1;
+    color: #0f5132;
+    border: 1px solid #c5e6d1;
+}
+
+.form-alert-error {
+    background: #fdf2f2;
+    color: #842029;
+    border: 1px solid #f1c0c5;
+}
+
+.form-error {
+    color: #b42318;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.form-group.is-invalid input,
+.form-group.is-invalid select,
+.form-group.is-invalid textarea {
+    border-color: #d96b6b;
+    background: #fff8f8;
+}
+
+
+/* =====================================================
+   THANK YOU PAGE
+===================================================== */
+
+.thankyou-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    padding: 90px 0 110px;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(2, 50, 38, .94),
+            rgba(2, 50, 38, .78)
+        ),
+        url("../img/hq-roast-bihar.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.thankyou-card {
+    width: min(720px, 100%);
+    margin: 0 auto;
+    background: #fff;
+    padding: 56px 42px;
+    border-radius: 28px;
+    text-align: center;
+    box-shadow: 0 24px 70px rgba(2, 50, 38, .22);
+}
+
+.thankyou-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 18px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #eef8f1;
+    color: #0f7a46;
+    font-size: 34px;
+}
+
+.thankyou-tag {
+    color: #d89e14;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.thankyou-card h1 {
+    font-family: Georgia, serif;
+    color: #084b42;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.15;
+    margin: 14px 0 16px;
+}
+
+.thankyou-card h1 span {
+    display: block;
+    color: #d89e14;
+}
+
+.thankyou-card p {
+    color: #5d6d67;
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto 32px;
+}
+
+.thankyou-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.thankyou-primary,
+.thankyou-secondary,
+.thankyou-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 22px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: .3s;
+}
+
+.thankyou-primary {
+    background: #e8ad1d;
+    color: #123f32;
+}
+
+.thankyou-primary:hover {
+    background: #063f2b;
+    color: #fff;
+}
+
+.thankyou-secondary {
+    border: 1px solid #dce2dc;
+    color: #084b42;
+    background: #fafbf9;
+}
+
+.thankyou-secondary:hover {
+    border-color: #063f2b;
+    color: #063f2b;
+}
+
+.thankyou-whatsapp {
+    background: #25d366;
+    color: #fff;
+}
+
+.thankyou-whatsapp:hover {
+    background: #1da851;
 }
 
 
@@ -1104,6 +1266,26 @@ img {
 
     .footer-grid {
         grid-template-columns: 1fr;
+    }
+
+    .thankyou-page {
+        padding: 50px 0 80px;
+        min-height: 60vh;
+    }
+
+    .thankyou-card {
+        padding: 36px 22px;
+        border-radius: 22px;
+    }
+
+    .thankyou-actions {
+        flex-direction: column;
+    }
+
+    .thankyou-primary,
+    .thankyou-secondary,
+    .thankyou-whatsapp {
+        width: 100%;
     }
 
     .floating-whatsapp,

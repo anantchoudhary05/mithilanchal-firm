@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\MoonShine\Pages;
 
 use App\Models\Blog;
+use App\Models\ContactLead;
 use App\Models\MoonshineUser;
 use App\MoonShine\Resources\Blog\BlogResource;
 use App\MoonShine\Resources\Blog\Pages\BlogFormPage;
+use App\MoonShine\Resources\ContactLead\ContactLeadResource;
+use App\MoonShine\Resources\ContactLead\Pages\ContactLeadFormPage;
 use App\Support\CmsRole;
 use App\Support\CmsUser;
 use MoonShine\Contracts\UI\ComponentContract;
@@ -24,6 +27,7 @@ use MoonShine\UI\Components\Metrics\Wrapped\ValueMetric;
 use MoonShine\UI\Components\Table\TableBuilder;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Email;
+use MoonShine\UI\Fields\Phone;
 use MoonShine\UI\Fields\Text;
 
 #[SkipMenu]
@@ -82,7 +86,46 @@ class Dashboard extends Page
             ->limit(10)
             ->get();
 
+        $newLeads = ContactLead::query()->incoming()->count();
+        $contactedLeads = ContactLead::query()->where('status', ContactLead::STATUS_CONTACTED)->count();
+        $totalLeads = ContactLead::query()->count();
+        $recentLeads = ContactLead::query()
+            ->latest()
+            ->limit(10)
+            ->get();
+
         return [
+            Heading::make('Contact enquiries', 3),
+            Grid::make([
+                Column::make([
+                    ValueMetric::make('New enquiries')->value($newLeads)->icon('inbox'),
+                ], 4, 12),
+                Column::make([
+                    ValueMetric::make('Contacted')->value($contactedLeads)->icon('check-circle'),
+                ], 4, 12),
+                Column::make([
+                    ValueMetric::make('Total enquiries')->value($totalLeads)->icon('users'),
+                ], 4, 12),
+            ]),
+            Box::make([
+                TableBuilder::make([
+                    Text::make('Name', 'name'),
+                    Email::make('Email', 'email'),
+                    Phone::make('Phone', 'phone'),
+                    Text::make('Requirement', 'requirement'),
+                    Text::make('Status', 'status')
+                        ->changePreview(static fn (mixed $value): string => ContactLead::statusOptions()[(string) $value] ?? (string) $value)
+                        ->badge(static fn (mixed $value): Color => match ($value) {
+                            ContactLead::STATUS_NEW, 'New' => Color::YELLOW,
+                            ContactLead::STATUS_CONTACTED, 'Contacted' => Color::GREEN,
+                            default => Color::GRAY,
+                        }),
+                    Date::make('Received', 'created_at')->format('d M Y H:i'),
+                ], $recentLeads)
+                    ->cast(new ModelCaster(ContactLead::class))
+                    ->buttons($this->leadRowButtons())
+                    ->stickyButtons(),
+            ]),
             Heading::make('Content overview', 3),
             Grid::make([
                 Column::make([
@@ -184,6 +227,39 @@ class Dashboard extends Page
                     ->buttons($this->blogRowButtons())
                     ->stickyButtons(),
             ]),
+        ];
+    }
+
+    /**
+     * @return list<ActionButton>
+     */
+    private function leadRowButtons(): array
+    {
+        return [
+            ActionButton::make(
+                '',
+                static function (mixed $item): string {
+                    if (! $item instanceof ContactLead || blank($item->getKey())) {
+                        return '#';
+                    }
+
+                    return toPage(
+                        page: ContactLeadFormPage::class,
+                        resource: ContactLeadResource::class,
+                        params: ['resourceItem' => $item->getKey()],
+                    );
+                },
+            )
+                ->withoutLoading()
+                ->primary()
+                ->icon('eye')
+                ->class('btn-square')
+                ->canSee(static fn (mixed $item): bool => $item instanceof ContactLead && CmsUser::isAdmin())
+                ->customAttributes([
+                    'title' => 'View enquiry',
+                    'aria-label' => 'View enquiry',
+                ])
+                ->showInLine(),
         ];
     }
 

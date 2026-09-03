@@ -287,7 +287,7 @@ textarea {
     display: flex;
     align-items: center;
     color: white;
-    background-image: url("https://akm-img-a-in.tosshub.com/lingo/ktak/images/story/202508/689de880e454e-makhana-033006649-16x9.jpg");
+    background-image: url("../img/hq-roasted.jpg");
     background-size: cover;
     background-position: center;
 }
@@ -812,7 +812,7 @@ blockquote {
 
 .cta {
     padding: 100px 0;
-    background: linear-gradient( rgba(8, 48, 15, .91), rgba(8, 48, 15, .91)), url("https://commons.wikimedia.org/wiki/Special:Redirect/file/Foxnut_Makhana_-_Nawada_District_-_Bihar_-_1.jpg") center/cover;
+    background: linear-gradient( rgba(8, 48, 15, .91), rgba(8, 48, 15, .91)), url("../img/hq-roast-bihar.jpg") center/cover;
     color: white;
     text-align: center;
 }

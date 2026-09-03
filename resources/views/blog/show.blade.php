@@ -47,6 +47,7 @@
                         <img
                             src="{{ $blog->featured_image_url }}"
                             alt="{{ $blog->image_alt ?: $blog->title }}"
+                            decoding="async"
                         >
                     </figure>
                 @endif

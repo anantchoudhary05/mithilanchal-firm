@@ -3,7 +3,7 @@
 
     <section class="hero">
       <!-- CHANGE YOUR HERO IMAGE HERE -->
-      <img src="{{ asset('assests/img/makhana main.webp') }}" alt="Makhana" class="hero-img" />
+      <img src="{{ asset('assests/img/hq-roast-bihar.jpg') }}" alt="Makhana roasted in Mithila" class="hero-img" fetchpriority="high" />
 
       <div class="hero-overlay"></div>
 
@@ -29,7 +29,7 @@
     <section class="story-section" id="story">
       <div class="container story-grid">
         <div class="story-image">
-          <img src="{{ asset('assests/img/makhana farmer.webp') }}" alt="Our Makhana Story" />
+          <img src="{{ asset('assests/img/hq-bowl.jpg') }}" alt="Our Makhana Story" loading="lazy" decoding="async" />
         </div>
 
         <div class="story-content">
@@ -176,7 +176,7 @@
         </div>
 
         <div class="farmers-image">
-          <img src="{{ asset('assests/img/makhana main.webp') }}" alt="Makhana Farmers" />
+          <img src="{{ asset('assests/img/hq-masala.jpg') }}" alt="Makhana prepared by local hands" loading="lazy" decoding="async" />
         </div>
       </div>
     </section>

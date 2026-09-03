@@ -638,7 +638,7 @@ a {
     align-items: center;
     text-align: center;
     color: #ffffff;
-    background: linear-gradient( rgba(24, 40, 18, 0.82), rgba(24, 40, 18, 0.82)), url("images/makhana.jpg") center / cover no-repeat;
+    background: linear-gradient( rgba(24, 40, 18, 0.82), rgba(24, 40, 18, 0.82)), url("../img/hq-roast-bihar.jpg") center / cover no-repeat;
 }
 
 .cta-content {

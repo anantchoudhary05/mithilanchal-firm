@@ -21,9 +21,9 @@
                         <a href="{{ route('blog.show', $blog->slug) }}" class="blog-card-link">
                             <div class="blog-card-media">
                                 @if ($blog->featured_image_url)
-                                    <img src="{{ $blog->featured_image_url }}" alt="{{ $blog->image_alt ?: $blog->title }}">
+                                    <img src="{{ $blog->featured_image_url }}" alt="{{ $blog->image_alt ?: $blog->title }}" loading="lazy" decoding="async">
                                 @else
-                                    <img src="{{ asset('assests/img/makhana main.webp') }}" alt="{{ $blog->image_alt ?: $blog->title }}">
+                                    <img src="{{ asset('assests/img/hq-white.jpg') }}" alt="{{ $blog->image_alt ?: $blog->title }}" loading="lazy" decoding="async">
                                 @endif
                                 <span class="blog-date-badge">
                                     {{ optional($blog->published_at ?? $blog->created_at)->format('d M, Y') }}

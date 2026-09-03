@@ -688,12 +688,12 @@ Example template:
 
 ### Suggested first follow-ups (not done yet — listed so you do not think they already exist)
 
-1. Wire contact form to a controller + mail/table.
-2. Fix `script.js` vs `style.js`.
-3. Replace leftover `.html` hrefs with named routes.
+1. ~~Wire contact form to a controller + mail/table.~~ **Done 2026-09-03** — leads store in `contact_leads`, admin CMS + dashboard, thank-you page.
+2. ~~Fix `script.js` vs `style.js`.~~ **Done 2026-09-02**
+3. ~~Replace leftover `.html` hrefs with named routes.~~ **Done 2026-09-02**
 4. Either use `is_sticky` in listing or remove the column.
-5. Point `robots.txt` sitemap at `APP_URL`.
-6. Fill MoonShine Dashboard or hide it.
+5. ~~Point `robots.txt` sitemap at `APP_URL`.~~ **Done 2026-09-02**
+6. ~~Fill MoonShine Dashboard or hide it.~~ **Done 2026-09-02**
 7. Product CMS (today products are HTML only).
 
 ---
@@ -749,6 +749,28 @@ Full file-by-file learning log: **`UPDATE_REPORT.md`**.
 - Why: Authors had no Edit action on approved posts and had to ask an admin to change them.
 - Changed (old → new): authors can edit any post they own; delete stays limited to draft/pending. Saving a live post sends it back to approval and takes it off the website until an admin approves it again.
 - Tests: author can edit own approved post, cannot delete it, cannot edit another author’s post.
+
+### 2026-09-02 — Public site theme, motion, and mobile polish
+
+- Why: The marketing site felt inconsistent across pages, used missing hero images, and had little motion or mobile-nav care.
+- Added: `public/assests/css/theme.css` (shared cream/green/gold layer, scroll reveal, drawer menu, reduced-motion).
+- Changed: local makhana photos on heroes; Contact as nav CTA; WhatsApp icon; warmer home copy; skip-to-content.
+- Tests: home loads `theme.css`, skip link, and WhatsApp icon.
+
+### 2026-09-03 — Public UI polish (home motion, stats, contact form visuals)
+
+- Why: The marketing site needed a stronger first impression and the contact form needed clear validation / confirmation UI.
+- Added: counting stat animation (`.stat-number[data-count]`); home hero slideshow + dots; 3-column values grid; contact form error styles (`.form-alert`, `.form-error`, `.is-invalid`); thank-you page styles (`.thankyou-page` / `.thankyou-card`); JS `data-digits-only` so the phone field only accepts digits.
+- Changed (old → new): home copy/photos/slideshow on `index.blade.php`; Contact Us labels drop required stars on email/message; phone placeholder is `10-digit mobile number` with `pattern="[0-9]{10}"`; thank-you page is `noindex`.
+- Tests: home shows `stat-number` counts; contact page shows the 10-digit pattern.
+
+### 2026-09-03 — Contact form stores leads in the admin CMS
+
+- Why: Submitting Contact Us did nothing. Admins needed to see who is interested.
+- Added: `contact_leads` table; `ContactLead` model/factory; `ContactController` + `StoreContactLeadRequest`; `GET/POST /contact-us`, `GET /contact-us/thank-you`; MoonShine `ContactLeadResource` (admin-only Leads menu); dashboard “Contact enquiries” metrics + recent table.
+- Changed (old → new): display-only `<form>` → POST that saves a lead; email and message optional; phone must be exactly 10 digits (no letters/symbols); success redirect is the thank-you page instead of the same form.
+- Tests: `ContactLeadTest` — store + thank-you redirect, optional email/message, reject bad phone, admin dashboard lists leads, authors do not see leads. Suite: 45 passing.
+- Still unused / still broken: no enquiry email/Mailable (mailer still `log`); product CMS; Vite on public pages; `link_attribute` UI; `assests` spelling.
 
 ---
 

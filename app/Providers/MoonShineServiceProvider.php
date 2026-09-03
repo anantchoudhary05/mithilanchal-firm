@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\MoonShine\Resources\Blog\BlogResource;
+use App\MoonShine\Resources\ContactLead\ContactLeadResource;
 use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
 use Illuminate\Support\ServiceProvider;
@@ -20,6 +21,7 @@ class MoonShineServiceProvider extends ServiceProvider
     {
         $core
             ->resources([
+                ContactLeadResource::class,
                 BlogResource::class,
                 MoonShineUserResource::class,
                 MoonShineUserRoleResource::class,

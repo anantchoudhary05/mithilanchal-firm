@@ -227,7 +227,7 @@ img {
             rgba(6, 129, 88, 0.55),
             rgba(3,46,32,.15)
         ),
-        url("images/makhana-hero.jpg")
+        url("../img/hq-bowl.jpg")
         center/cover no-repeat;
 }
 

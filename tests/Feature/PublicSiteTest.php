@@ -43,3 +43,21 @@ it('does not show a cms login button on the public navbar', function () {
         ->assertDontSee('nav-login')
         ->assertDontSee(route('moonshine.login'), false);
 });
+
+it('loads the shared public theme and skip link', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('assests/css/theme.css', false)
+        ->assertSee('Skip to content')
+        ->assertSee('fa-whatsapp', false)
+        ->assertSee('Grown with care');
+});
+
+it('renders counting stats on the homepage', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('stat-number', false)
+        ->assertSee('data-count="4"', false)
+        ->assertSee('data-count="100"', false)
+        ->assertSee('Years of care');
+});

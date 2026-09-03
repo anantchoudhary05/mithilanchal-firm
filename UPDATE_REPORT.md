@@ -61,7 +61,7 @@ When an admin picks an author, `blogs.author_id` is stored and `author_name` / `
 |---|---|---|---|
 | G01 | `blogs.is_sticky` | **Removed from UI** | Column stays in the database. Sticky switcher, listing sort, and Pinned badge are gone so the list has room for Preview |
 | G02 | `blogs.link_attribute` | **Kept in DB, not shown** | TinyMCE Rel dropdown already sets dofollow/nofollow per link. A second post-level field would confuse editors |
-| G03 | Contact form | **Unchanged** | Public marketing form still has no backend. Not part of the CMS role work |
+| G03 | Contact form | **Unchanged on 2 Sep** (wired on **3 Sep** — see section 10) | Public marketing form still had no backend in the CMS-role change set |
 | G04 | Laravel `users` table | **Unchanged** | Public site has no customer login. CMS uses `moonshine_users` |
 | G05 | Notifications table | **Unchanged** | MoonShine package flag, not app code |
 | G06 | Jobs / queue | **Unchanged** | Infrastructure only |
@@ -251,7 +251,7 @@ Existing admin accounts keep role **Admin**. Create writers under **People → A
 
 ## 8. Still unused / not in this change
 
-- Contact form still does not send mail or store enquiries.
+- Contact form **did not** store enquiries in this 2 Sep change set (wired on 3 Sep — see section 10). Still no enquiry email.
 - Products remain hardcoded HTML (no product CMS).
 - Vite + Tailwind still unused by public pages.
 - Laravel `users` table still unused.
@@ -272,3 +272,85 @@ Existing admin accounts keep role **Admin**. Create writers under **People → A
 | `ExampleTest` | Home 200 (unchanged) |
 
 Run: `php artisan test`
+
+---
+
+## 10. Later updates (3 September 2026)
+
+This section is **after** the CMS-role change set above. Test count at this date: **45** Pest tests passing.
+
+### 10.1 What you asked for, and what was delivered
+
+| # | Request | Result |
+|---|---|---|
+| 1 | Public UI polish | Home slideshow, counting stats, values grid, shared `theme.css` motion, contact form error styles, thank-you page |
+| 2 | Make Contact Us workable | Submissions save as `contact_leads`. Admin dashboard + **Leads → Contact enquiries** |
+| 3 | Email and message not mandatory | Both nullable in DB, form, and `StoreContactLeadRequest` |
+| 4 | Phone = 10 digits only | HTML `pattern` + JS strips letters/symbols + server `digits:10` |
+| 5 | Thank you page after submit | `GET /contact-us/thank-you` (`contact.thankYou`), `noindex` |
+
+### 10.2 How a contact enquiry flows now
+
+```
+Public /contact-us
+  ├─ Required: name, 10-digit phone, requirement
+  ├─ Optional: company, email, quantity, message
+  ├─ POST /contact-us (throttle 5/min) → contact_leads row, status = new
+  └─ Redirect → /contact-us/thank-you  (shows the visitor’s name)
+
+Admin login (/admin)
+  ├─ Dashboard: New / Contacted / Total enquiries + last 10 leads
+  ├─ Leads → Contact enquiries: search, filter, mark contacted, notes, delete
+  └─ Authors do not see this menu or these numbers
+```
+
+No Mailable is sent. The lead lives in the database for the admin to call/WhatsApp.
+
+### 10.3 File-by-file (contact + related UI)
+
+#### New files
+
+| File | Role |
+|---|---|
+| `app/Models/ContactLead.php` | Lead model; statuses `new` / `contacted` / `closed`; requirement list |
+| `app/Http/Controllers/ContactController.php` | `show`, `store`, `thankYou` |
+| `app/Http/Requests/StoreContactLeadRequest.php` | Validation (phone `digits:10`; email/message nullable) |
+| `app/MoonShine/Resources/ContactLead/ContactLeadResource.php` | Admin-only CMS resource |
+| `app/MoonShine/Resources/ContactLead/Pages/ContactLeadIndexPage.php` | List, metrics, mark-as-contacted |
+| `app/MoonShine/Resources/ContactLead/Pages/ContactLeadFormPage.php` | Read-only enquiry + status/notes |
+| `database/migrations/2026_09_03_110000_create_contact_leads_table.php` | `contact_leads` |
+| `database/migrations/2026_09_03_112500_make_contact_lead_email_and_message_nullable.php` | Email/message nullable on MySQL |
+| `database/factories/ContactLeadFactory.php` | Test factory |
+| `resources/views/contact-thank-you.blade.php` | Thank-you UI |
+| `tests/Feature/ContactLeadTest.php` | Public submit + admin visibility tests |
+
+#### Edited files
+
+| File | Change (old → new) |
+|---|---|
+| `routes/web.php` | Closure view → `ContactController`; added POST store + thank-you GET |
+| `app/Providers/MoonShineServiceProvider.php` | Registered `ContactLeadResource` |
+| `app/MoonShine/Layouts/MoonShineLayout.php` | Sidebar **Leads → Contact enquiries** (admin only) |
+| `app/MoonShine/Pages/Dashboard.php` | Admin dashboard starts with enquiry metrics + recent table |
+| `resources/views/ContactUs.blade.php` | Working POST form, CSRF, old input, errors; email/message optional; 10-digit phone field |
+| `resources/views/components/header.blade.php` | Contact Us stays active on the thank-you route |
+| `resources/views/index.blade.php` | Hero slideshow, counting stats, values grid, local photos |
+| `public/assests/css/contact.css` | Form alerts + thank-you page layout |
+| `public/assests/css/theme.css` | Shared public theme, stats, motion |
+| `public/assests/js/style.js` | Stat counters, hero slideshow, `data-digits-only` phone filter |
+
+### 10.4 Database
+
+```bash
+php artisan migrate
+```
+
+Creates `contact_leads` (name, company, email nullable, phone, requirement, quantity, message nullable, status, admin_notes, ip_address).
+
+### 10.5 How to try it
+
+1. Open `/contact-us`, submit with a 10-digit phone (email/message can be blank).
+2. You should land on `/contact-us/thank-you`.
+3. Log in at `/admin` as **Admin**. Dashboard should show the new enquiry.
+4. Open **Leads → Contact enquiries** to mark contacted or add notes.
+5. An Author login must **not** see those leads.

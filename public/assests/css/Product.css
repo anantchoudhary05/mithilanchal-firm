@@ -249,7 +249,7 @@ img {
             rgba(3,57,42,.95),
             rgba(3,57,42,.65)
         ),
-        url("images/makhana-bg.jpg");
+        url("../img/hq-white.jpg");
 
     background-size: cover;
     background-position: center;

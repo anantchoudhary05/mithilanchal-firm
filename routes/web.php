@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminLogoutController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TinyMceImageUploadController;
 use Illuminate\Support\Facades\Route;
@@ -23,9 +24,11 @@ Route::get('/our-story', function () {
     return view('ourstory');
 })->name('OurStory');
 
-Route::get('/contact-us', function () {
-    return view('ContactUs');
-})->name('ContactUs');
+Route::get('/contact-us', [ContactController::class, 'show'])->name('ContactUs');
+Route::post('/contact-us', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
+Route::get('/contact-us/thank-you', [ContactController::class, 'thankYou'])->name('contact.thankYou');
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');

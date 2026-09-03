@@ -73,7 +73,7 @@
 
           <article class="product-card">
             <div class="product-image">
-              <img src="{{ asset('assests/img/Raw-Makhana-2.webp') }}" alt="Premium Raw Makhana" />
+              <img src="{{ asset('assests/img/hq-grains.jpg') }}" alt="Premium Raw Makhana" loading="lazy" decoding="async" />
 
               <span class="product-badge"> PREMIUM </span>
             </div>
@@ -117,7 +117,7 @@
 
           <article class="product-card featured">
             <div class="product-image">
-              <img src="{{ asset('assests/img/premium makhana.webp') }}" alt="Premium Makhana" />
+              <img src="{{ asset('assests/img/hq-white.jpg') }}" alt="Premium Makhana" loading="lazy" decoding="async" />
 
               <span class="product-badge"> BEST SELLER </span>
             </div>
@@ -161,7 +161,7 @@
 
           <article class="product-card">
             <div class="product-image">
-              <img src="{{ asset('assests/img/roasted makhana.webp') }}" alt="Roasted Makhana" />
+              <img src="{{ asset('assests/img/hq-roasted.jpg') }}" alt="Roasted Makhana" loading="lazy" decoding="async" />
 
               <span class="product-badge"> READY TO EAT </span>
             </div>
@@ -205,7 +205,7 @@
 
           <article class="product-card">
             <div class="product-image">
-              <img src="{{ asset('assests/img/Flavored makhana.webp') }}" alt="Flavoured Makhana" />
+              <img src="{{ asset('assests/img/hq-masala.jpg') }}" alt="Flavoured Makhana" loading="lazy" decoding="async" />
 
               <span class="product-badge"> FLAVOURED </span>
             </div>
@@ -249,7 +249,7 @@
 
           <article class="product-card">
             <div class="product-image">
-              <img src="{{ asset('assests/img/bulk makhana.webp') }}" alt="Bulk Makhana" />
+              <img src="{{ asset('assests/img/hq-grains-2.jpg') }}" alt="Bulk Makhana" loading="lazy" decoding="async" />
 
               <span class="product-badge"> WHOLESALE </span>
             </div>
@@ -293,7 +293,7 @@
 
           <article class="product-card">
             <div class="product-image">
-              <img src="{{ asset('assests/img/private level.webp') }}" alt="Private Label Makhana" />
+              <img src="{{ asset('assests/img/hq-bowl.jpg') }}" alt="Private Label Makhana" loading="lazy" decoding="async" />
 
               <span class="product-badge"> CUSTOM </span>
             </div>
@@ -343,7 +343,7 @@
     <section class="quality-section">
       <div class="container quality-grid">
         <div class="quality-image">
-          <img src="{{ asset('assests/img/makhana farming.webp') }}" alt="Makhana Farming" />
+          <img src="{{ asset('assests/img/hq-roast-bihar.jpg') }}" alt="Makhana roasting in Bihar" loading="lazy" decoding="async" />
         </div>
 
         <div class="quality-content">

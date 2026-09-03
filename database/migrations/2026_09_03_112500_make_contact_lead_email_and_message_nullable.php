@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
+        DB::statement('ALTER TABLE contact_leads MODIFY email VARCHAR(255) NULL');
+        DB::statement('ALTER TABLE contact_leads MODIFY message TEXT NULL');
+    }
+
+    public function down(): void
+    {
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
+        DB::statement('ALTER TABLE contact_leads MODIFY email VARCHAR(255) NOT NULL');
+        DB::statement('ALTER TABLE contact_leads MODIFY message TEXT NOT NULL');
+    }
+};

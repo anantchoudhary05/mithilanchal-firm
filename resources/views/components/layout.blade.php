@@ -35,11 +35,11 @@
     <meta property="og:type" content="{{ $og_type ?? 'website' }}">
     <meta property="og:url" content="{{ $canonical_url ?? url()->current() }}">
 
-    <meta name="theme-color" content="#155b27">
+    <meta name="theme-color" content="#175c20">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('assests/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assests/css/contact.css') }}">
@@ -47,6 +47,7 @@
     <link rel="stylesheet" href="{{ asset('assests/css/Product.css') }}">
     <link rel="stylesheet" href="{{ asset('assests/css/WhyChooseUs.css') }}">
     <link rel="stylesheet" href="{{ asset('assests/css/blog.css') }}">
+    <link rel="stylesheet" href="{{ asset('assests/css/theme.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     @if(!empty($custom_schema))
@@ -57,9 +58,10 @@
 </head>
 
 <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <x-header />
 
-    <main class="main">
+    <main class="main" id="main-content">
         {{ $slot }}
     </main>
 
@@ -119,6 +121,7 @@
         <div class="copyright">
             <div class="container">
                 © {{ date('Y') }} Mithilanchal Farms. All Rights Reserved.
+                <span class="photo-credit"> Photos: Wikimedia Commons (CC0 / CC BY-SA 4.0).</span>
             </div>
         </div>
     </footer>
@@ -126,9 +129,11 @@
     <a
         href="https://wa.me/919296918101?text=Hello%20Mithilanchal%20Farms"
         class="floating-whatsapp"
+        target="_blank"
+        rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
     >
-        <span> ☎ </span>
+        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
     </a>
 
     <script src="{{ asset('assests/js/style.js') }}"></script>

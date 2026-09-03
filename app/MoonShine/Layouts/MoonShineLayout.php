@@ -6,6 +6,7 @@ namespace App\MoonShine\Layouts;
 
 use App\MoonShine\Pages\ProfilePage;
 use App\MoonShine\Resources\Blog\BlogResource;
+use App\MoonShine\Resources\ContactLead\ContactLeadResource;
 use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
 use App\Support\CmsUser;
@@ -61,6 +62,9 @@ CSS
                 'Dashboard',
                 'home',
             ),
+            MenuGroup::make('Leads', [
+                MenuItem::make(ContactLeadResource::class, 'Contact enquiries'),
+            ])->canSee(static fn (mixed $item): bool => CmsUser::isAdmin()),
             MenuGroup::make('Content', [
                 MenuItem::make(BlogResource::class, CmsUser::isAuthor() ? 'My Blogs' : 'Blogs'),
             ]),

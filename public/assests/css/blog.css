@@ -4,11 +4,13 @@
 
 .blog-hero {
     background:
-        linear-gradient(135deg, rgba(23, 92, 32, 0.94), rgba(12, 61, 21, 0.96)),
-        #175c20;
+        linear-gradient(135deg, rgba(23, 92, 32, 0.92), rgba(12, 61, 21, 0.88)),
+        url("../img/hq-bowl.jpg") center/cover;
     color: #fff;
     padding: 5.5rem 0 4rem;
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .blog-hero-eyebrow {

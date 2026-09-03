@@ -4,23 +4,30 @@
      Hero section
     ========================= -->
 
-    <section class="hero">
+    <section class="hero hero-slideshow">
+
+        <div class="hero-slides" aria-hidden="true">
+            <div class="hero-slide is-active" style="background-image: url('{{ asset('assests/img/hq-roasted.jpg') }}')"></div>
+            <div class="hero-slide" style="background-image: url('{{ asset('assests/img/hq-bowl.jpg') }}')"></div>
+            <div class="hero-slide" style="background-image: url('{{ asset('assests/img/hq-roast-bihar.jpg') }}')"></div>
+            <div class="hero-slide" style="background-image: url('{{ asset('assests/img/hq-white.jpg') }}')"></div>
+        </div>
 
         <div class="hero-overlay"></div>
 
         <div class="container hero-content">
 
             <div class="eyebrow light">
-                ABOUT MITHILANCHAL FARMS
+                FROM MITHILA'S PONDS
             </div>
 
             <h1>
                 Rooted in Mithilanchal.
-                <span>Growing with Purpose.</span>
+                <span>Grown with care.</span>
             </h1>
 
             <p>
-                Premium makhana from the heart of Bihar, sourced with care and delivered with trust.
+                Premium fox nuts from Darbhanga — popped by local hands, graded with honesty, and shared with homes and businesses that value the real taste of Bihar.
             </p>
 
             <div class="hero-buttons">
@@ -37,13 +44,9 @@
 
         </div>
 
+        <div class="hero-dots"></div>
+
     </section>
-
-
-
-    <!-- =========================
-     COMPANY INTRO
-      ========================= -->
 
     <section class="section">
 
@@ -52,8 +55,10 @@
 
             <div class="about-image">
 
-                <img src="{{ asset('assests/img/makhana farming.webp') }}"
-                    alt="Real makhana being roasted in Bihar">
+                <img src="{{ asset('assests/img/hq-roast-bihar.jpg') }}"
+                    alt="Makhana being roasted in Bihar"
+                    loading="lazy"
+                    decoding="async">
 
                 <div class="image-label">
 
@@ -130,60 +135,41 @@
      STATS
 ========================= -->
 
-    <section class="stats">
+    <section class="stats" aria-label="Mithilanchal Farms at a glance">
 
         <div class="container stats-grid">
 
-            <div class="stat">
+            <article class="stat">
+                <div class="stat-icon" aria-hidden="true">
+                    <i class="fa-solid fa-seedling"></i>
+                </div>
+                <strong class="stat-number" data-count="4" data-suffix="+">4+</strong>
+                <span>Years of care</span>
+            </article>
 
-                <strong>
-                    4+
-                </strong>
+            <article class="stat">
+                <div class="stat-icon" aria-hidden="true">
+                    <i class="fa-solid fa-certificate"></i>
+                </div>
+                <strong class="stat-number" data-count="100" data-suffix="%">100%</strong>
+                <span>Quality & grading</span>
+            </article>
 
-                <span>
-                    Years Experience
-                </span>
+            <article class="stat">
+                <div class="stat-icon" aria-hidden="true">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <strong class="stat-number" data-count="6">6</strong>
+                <span>Makhana ranges</span>
+            </article>
 
-            </div>
-
-
-            <div class="stat">
-
-                <strong>
-                    Premium
-                </strong>
-
-                <span>
-                    Quality & Grading
-                </span>
-
-            </div>
-
-
-            <div class="stat">
-
-                <strong>
-                    Pan-India
-                </strong>
-
-                <span>
-                    Wholesale Supply
-                </span>
-
-            </div>
-
-
-            <div class="stat">
-
-                <strong>
-                    Global
-                </strong>
-
-                <span>
-                    Export Services
-                </span>
-
-            </div>
+            <article class="stat">
+                <div class="stat-icon" aria-hidden="true">
+                    <i class="fa-solid fa-earth-asia"></i>
+                </div>
+                <strong class="stat-number" data-count="2">2</strong>
+                <span>India & export markets</span>
+            </article>
 
         </div>
 
@@ -251,8 +237,10 @@
 
             <div class="farmer-image">
 
-                <img src="{{ asset('assests/img/makhana farmer.webp') }}"
-                    alt="Traditional makhana harvesting in Bihar">
+                <img src="{{ asset('assests/img/hq-masala.jpg') }}"
+                    alt="Traditional roasted makhana from Bihar"
+                    loading="lazy"
+                    decoding="async">
 
                 <div class="photo-caption">
                     Traditional makhana harvesting in Bihar
@@ -291,7 +279,7 @@
             </div>
 
 
-            <div class="values-grid">
+            <div class="values-grid values-grid-3">
 
 
                 <article class="value-card">
@@ -433,8 +421,10 @@
 
                 <div class="gallery-main">
 
-                    <img src="{{ asset('assests/img/roasted makhana.webp') }}"
-                        alt="Roasted makhana fox nuts">
+                    <img src="{{ asset('assests/img/hq-roasted.jpg') }}"
+                        alt="Roasted makhana fox nuts"
+                        loading="lazy"
+                        decoding="async">
 
                     <div class="gallery-text">
 
@@ -453,16 +443,20 @@
 
                 <div class="gallery-small">
 
-                    <img src="{{ asset('assests/img/premium makhana.webp') }}"
-                        alt="Makhana snack from India">
+                    <img src="{{ asset('assests/img/hq-white.jpg') }}"
+                        alt="Premium white makhana"
+                        loading="lazy"
+                        decoding="async">
 
                 </div>
 
 
                 <div class="gallery-small">
 
-                    <img src="{{ asset('assests/img/Flavored makhana.webp') }}"
-                        alt="Roasted and spiced phool makhana">
+                    <img src="{{ asset('assests/img/hq-bowl.jpg') }}"
+                        alt="Makhana served as a snack"
+                        loading="lazy"
+                        decoding="async">
 
                 </div>
 
@@ -552,8 +546,10 @@
 
             <div class="story-image">
 
-                <img src="{{ asset('assests/img/makhana main.webp') }}"
-                    alt="Freshly harvested makhana from Bihar">
+                <img src="{{ asset('assests/img/hq-phool.jpg') }}"
+                    alt="Fresh phool makhana from Bihar"
+                    loading="lazy"
+                    decoding="async">
 
             </div>
 

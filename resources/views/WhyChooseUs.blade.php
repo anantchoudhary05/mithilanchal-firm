@@ -34,7 +34,7 @@
     <section class="intro-section">
       <div class="container intro-grid">
         <div class="intro-image">
-          <img src="{{ asset('assests/img/makhana main.webp') }}" alt="Makhana farming in Bihar" />
+          <img src="{{ asset('assests/img/hq-white.jpg') }}" alt="Premium makhana from Bihar" loading="lazy" decoding="async" />
 
           <div class="experience-card">
             <strong>100%</strong>
@@ -330,7 +330,7 @@
         </div>
 
         <div class="benefits-image">
-          <img src="{{ asset('assests/img/premium makhana.webp') }}" alt="Premium Makhana" />
+          <img src="{{ asset('assests/img/hq-phool.jpg') }}" alt="Premium Makhana" loading="lazy" decoding="async" />
 
           <div class="image-label">
             <i class="fa-solid fa-star"></i>
@@ -349,39 +349,39 @@
      STATS
 ===================================================== -->
 
-    <section class="stats-section">
+    <section class="stats-section" aria-label="Mithilanchal Farms at a glance">
       <div class="container stats-grid">
-        <div class="stat">
-          <i class="fa-solid fa-location-dot"></i>
+        <article class="stat">
+          <div class="stat-icon" aria-hidden="true">
+            <i class="fa-solid fa-seedling"></i>
+          </div>
+          <strong class="stat-number" data-count="4" data-suffix="+">4+</strong>
+          <span>Years of care</span>
+        </article>
 
-          <strong> Bihar </strong>
+        <article class="stat">
+          <div class="stat-icon" aria-hidden="true">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+          <strong class="stat-number" data-count="100" data-suffix="%">100%</strong>
+          <span>Quality & grading</span>
+        </article>
 
-          <span> Our Roots </span>
-        </div>
+        <article class="stat">
+          <div class="stat-icon" aria-hidden="true">
+            <i class="fa-solid fa-box-open"></i>
+          </div>
+          <strong class="stat-number" data-count="6">6</strong>
+          <span>Makhana ranges</span>
+        </article>
 
-        <div class="stat">
-          <i class="fa-solid fa-seedling"></i>
-
-          <strong> Premium </strong>
-
-          <span> Quality Focus </span>
-        </div>
-
-        <div class="stat">
-          <i class="fa-solid fa-handshake"></i>
-
-          <strong> B2B </strong>
-
-          <span> Business Ready </span>
-        </div>
-
-        <div class="stat">
-          <i class="fa-solid fa-heart"></i>
-
-          <strong> Trust </strong>
-
-          <span> At Our Core </span>
-        </div>
+        <article class="stat">
+          <div class="stat-icon" aria-hidden="true">
+            <i class="fa-solid fa-earth-asia"></i>
+          </div>
+          <strong class="stat-number" data-count="2">2</strong>
+          <span>India & export markets</span>
+        </article>
       </div>
     </section>
 
