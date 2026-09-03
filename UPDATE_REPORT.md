@@ -354,3 +354,81 @@ Creates `contact_leads` (name, company, email nullable, phone, requirement, quan
 3. Log in at `/admin` as **Admin**. Dashboard should show the new enquiry.
 4. Open **Leads → Contact enquiries** to mark contacted or add notes.
 5. An Author login must **not** see those leads.
+
+---
+
+## 11. Later updates (3 September 2026 — CMS dashboard UI, serials, Excel)
+
+This section is **after** the contact-form change set in section 10. Test count at this date: **50** Pest tests passing.
+
+### 11.1 What you asked for, and what was delivered
+
+| # | Request | Result |
+|---|---|---|
+| 1 | Admin dashboard UI is hard to scan; lead details stack one field after another | Enquiry opens as a compact 2-column card; follow-up stays beside it. Dashboard has a greeting, shortcuts, colour-coded metrics, and side-by-side tables |
+| 2 | Serial number on every table; filtering **New** starts at 1 | `S.No.` column on dashboard tables, Contact enquiries, Blogs, Authors, and Roles. Numbering is for the current result set (filter/tag resets to 1; page 2 continues 26, 27, …) |
+| 3 | Excel report on Contact enquiries | **Export Excel** downloads one `.xlsx` with three sheets: **New**, **Contacted**, **Closed** |
+
+### 11.2 How the CMS screens work now
+
+```
+Admin login (/admin)
+  ├─ Dashboard greeting + shortcuts (View all leads / Write a blog)
+  ├─ Contact metrics + last 10 leads (click-to-call phone, S.No.)
+  ├─ Authors table | Pending posts (side by side, S.No.)
+  ├─ Leads → Contact enquiries
+  │    ├─ S.No. + click-to-call / WhatsApp / Email
+  │    ├─ Filter or query tag (New / Contacted / Closed) → S.No. starts at 1
+  │    ├─ Export Excel → one file, 3 sheets (all New, Contacted, Closed rows)
+  │    └─ View enquiry: compact card (name, phone, message) + sticky Follow-up
+  └─ Authors still do not see leads, export, or enquiry numbers
+
+Author login (/admin)
+  ├─ Dashboard greeting + shortcuts (My blogs / Write a post)
+  └─ Recent posts table with S.No.
+```
+
+No extra Composer package. The `.xlsx` is built with PHP `ZipArchive` (SpreadsheetML). No Mailable is sent.
+
+### 11.3 File-by-file (dashboard UI + serials + Excel)
+
+#### New files
+
+| File | Role |
+|---|---|
+| `resources/views/moonshine/contact-lead-summary.blade.php` | Compact enquiry card: status badge, Call / WhatsApp / Email, 2-column details |
+| `resources/views/moonshine/dashboard-welcome.blade.php` | Greeting bar + shortcut chips |
+| `app/Support/SerialNumber.php` | Shared `S.No.` Preview field; `forIndexPage()` adds page offset |
+| `app/Exports/ContactLeadExcelExporter.php` | Writes a real `.xlsx` with three worksheets |
+| `app/MoonShine/Handlers/ContactLeadExcelExportHandler.php` | Admin-only MoonShine handler (`excel-export`) behind **Export Excel** |
+
+#### Edited files
+
+| File | Change (old → new) |
+|---|---|
+| `app/Models/ContactLead.php` | Added `telHref()`, `whatsappHref()`, `mailtoHref()`, `phoneDigits()`, `receivedLabel()` for click-to-call and the enquiry card |
+| `app/MoonShine/Resources/ContactLead/Pages/ContactLeadFormPage.php` | Stacked Preview fields → summary card (8 cols) + sticky Follow-up (4 cols); Call / WhatsApp / Email buttons |
+| `app/MoonShine/Resources/ContactLead/Pages/ContactLeadIndexPage.php` | `S.No.`; clickable phone/email; Call / WhatsApp row actions; **Export Excel** handler |
+| `app/MoonShine/Pages/Dashboard.php` | Welcome banner, View-all links, colour-coded metrics, authors \| pending side by side, `S.No.`, click-to-call |
+| `app/MoonShine/Layouts/MoonShineLayout.php` | Palette Purple → **Green**; CSS for welcome bar, metric accents, lead card, sticky follow-up |
+| `app/MoonShine/Resources/Blog/Pages/BlogIndexPage.php` | `S.No.`; colour-coded metric cards |
+| `app/MoonShine/Resources/Blog/Pages/BlogFormPage.php` | Title/slug, status/type/date, SEO title/keywords sit in rows instead of a long stack |
+| `app/MoonShine/Resources/MoonShineUser/Pages/MoonShineUserIndexPage.php` | `S.No.` |
+| `app/MoonShine/Resources/MoonShineUserRole/Pages/MoonShineUserRoleIndexPage.php` | `S.No.` |
+| `app/MoonShine/Pages/ProfilePage.php` | Name and username sit side by side |
+| `tests/Feature/ContactLeadTest.php` | Compact enquiry card, S.No. / Export Excel on the list, 3-sheet workbook, admin download, author 403 |
+
+### 11.4 Excel report columns
+
+Each sheet has: S.No., Name, Company, Email, Phone, Requirement, Quantity, Message, Status, Admin notes, Received.
+
+Empty statuses still get a sheet with headers only.
+
+### 11.5 How to try it
+
+1. Log in at `/admin` as **Admin**. Dashboard should greet you and show `S.No.` on the enquiry table.
+2. Open **Leads → Contact enquiries**. Confirm `S.No.` and **Export Excel**.
+3. Click **New** (or another status tag). `S.No.` should start at 1 for that list.
+4. Open a lead. Details should sit in a card with Call / WhatsApp; status/notes on the right.
+5. Click **Export Excel**. Open the file — three sheets: New, Contacted, Closed.
+6. An Author login must **not** see leads or the export button.

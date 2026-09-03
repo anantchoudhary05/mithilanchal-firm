@@ -6,6 +6,7 @@ namespace App\MoonShine\Resources\MoonShineUser\Pages;
 
 use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
+use App\Support\SerialNumber;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Contracts\UI\FieldContract;
@@ -31,6 +32,7 @@ final class MoonShineUserIndexPage extends IndexPage
     protected function fields(): iterable
     {
         return [
+            SerialNumber::forIndexPage($this),
             ID::make()->sortable(),
 
             BelongsTo::make(

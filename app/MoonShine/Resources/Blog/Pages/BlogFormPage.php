@@ -16,6 +16,7 @@ use MoonShine\Laravel\Pages\Crud\FormPage;
 use MoonShine\Support\ListOf;
 use MoonShine\TinyMce\Fields\TinyMce;
 use MoonShine\UI\Components\Layout\Box;
+use MoonShine\UI\Components\Layout\Flex;
 use MoonShine\UI\Components\Tabs;
 use MoonShine\UI\Components\Tabs\Tab;
 use MoonShine\UI\Fields\Date;
@@ -63,11 +64,13 @@ final class BlogFormPage extends FormPage
                     Tab::make('Blog Content', [
                         ID::make(),
 
-                        Text::make('Blog Title', 'title')
-                            ->required(),
+                        Flex::make([
+                            Text::make('Blog Title', 'title')
+                                ->required(),
 
-                        Text::make('URL Slug', 'slug')
-                            ->hint('Leave empty to auto-generate from title'),
+                            Text::make('URL Slug', 'slug')
+                                ->hint('Leave empty to auto-generate from title'),
+                        ])->itemsAlign('start')->justifyAlign('start'),
 
                         TinyMce::make('Main Content Editor', 'content')
                             ->required()
@@ -108,53 +111,57 @@ final class BlogFormPage extends FormPage
                                 return CmsUser::isAuthor() && $blog?->isLive() === true;
                             }),
 
-                        Select::make('Status', 'status')
-                            ->options($isAdmin
-                                ? [
-                                    'draft' => 'Draft',
-                                    'review' => 'Awaiting approval',
-                                    'scheduled' => 'Scheduled',
-                                    'published' => 'Approved',
-                                ]
-                                : [
-                                    'draft' => 'Draft',
-                                    'review' => 'Submit for approval',
-                                ])
-                            ->default($isAdmin ? 'published' : 'draft')
-                            ->changeFill(static function (mixed $data, mixed $field): mixed {
-                                $status = $data instanceof Blog ? $data->status : null;
+                        Flex::make([
+                            Select::make('Status', 'status')
+                                ->options($isAdmin
+                                    ? [
+                                        'draft' => 'Draft',
+                                        'review' => 'Awaiting approval',
+                                        'scheduled' => 'Scheduled',
+                                        'published' => 'Approved',
+                                    ]
+                                    : [
+                                        'draft' => 'Draft',
+                                        'review' => 'Submit for approval',
+                                    ])
+                                ->default($isAdmin ? 'published' : 'draft')
+                                ->changeFill(static function (mixed $data, mixed $field): mixed {
+                                    $status = $data instanceof Blog ? $data->status : null;
 
-                                if (CmsUser::isAuthor() && filled($status) && ! in_array($status, ['draft', 'review'], true)) {
-                                    return 'review';
-                                }
+                                    if (CmsUser::isAuthor() && filled($status) && ! in_array($status, ['draft', 'review'], true)) {
+                                        return 'review';
+                                    }
 
-                                return $status;
-                            })
-                            ->hint($isAdmin
-                                ? 'Use Preview to check the page first. Approved + Active ON makes it live, or use the green Approve button on the list.'
-                                : 'Save as Draft while writing. Use Preview to check the page, then Submit for approval when it is ready. Editing a live post sends it back for approval.')
-                            ->required(),
+                                    return $status;
+                                })
+                                ->hint($isAdmin
+                                    ? 'Use Preview to check the page first. Approved + Active ON makes it live, or use the green Approve button on the list.'
+                                    : 'Save as Draft while writing. Use Preview to check the page, then Submit for approval when it is ready. Editing a live post sends it back for approval.')
+                                ->required(),
 
-                        Select::make('Content Type', 'content_type')
-                            ->options([
-                                'guide' => 'Guide',
-                                'news' => 'News',
-                                'case_study' => 'Case Study',
-                                'technical' => 'Technical',
-                                'comparison' => 'Comparison',
-                                'product_education' => 'Product Education',
-                            ]),
+                            Select::make('Content Type', 'content_type')
+                                ->options([
+                                    'guide' => 'Guide',
+                                    'news' => 'News',
+                                    'case_study' => 'Case Study',
+                                    'technical' => 'Technical',
+                                    'comparison' => 'Comparison',
+                                    'product_education' => 'Product Education',
+                                ]),
 
-                        Date::make('Published / Scheduled Date', 'published_at')
-                            ->withTime()
-                            ->hint('For Published posts this is only the display date. For Scheduled, wait until this time.')
-                            ->canSee(static fn (mixed $item): bool => CmsUser::isAdmin()),
+                            Date::make('Published / Scheduled Date', 'published_at')
+                                ->withTime()
+                                ->hint('For Published posts this is only the display date. For Scheduled, wait until this time.')
+                                ->canSee(static fn (mixed $item): bool => CmsUser::isAdmin()),
+                        ])->itemsAlign('start')->justifyAlign('start'),
 
-                        Switcher::make('Active (visible on website)', 'is_active')
-                            ->default($isAdmin)
-                            ->canSee(static fn (mixed $item): bool => CmsUser::isAdmin()),
-                        Switcher::make('Featured Post', 'is_featured')
-                            ->canSee(static fn (mixed $item): bool => CmsUser::isAdmin()),
+                        Flex::make([
+                            Switcher::make('Active (visible on website)', 'is_active')
+                                ->default($isAdmin)
+                                ->canSee(static fn (mixed $item): bool => CmsUser::isAdmin()),
+                            Switcher::make('Featured Post', 'is_featured')
+                                ->canSee(static fn (mixed $item): bool => CmsUser::isAdmin()),
+                        ])->itemsAlign('center')->justifyAlign('start'),
 
                         Textarea::make('Heading Structure', 'heading_structure')
                             ->hint('Auto-filled from content headings if left empty (H1: ..., H2: ...)'),
@@ -164,9 +171,11 @@ final class BlogFormPage extends FormPage
                     ])->icon('document-text'),
 
                     Tab::make('SEO Control', [
-                        Text::make('SEO Title', 'meta_title'),
+                        Flex::make([
+                            Text::make('SEO Title', 'meta_title'),
+                            Text::make('Meta Keywords', 'meta_keywords'),
+                        ])->itemsAlign('start')->justifyAlign('start'),
                         Textarea::make('Meta Description', 'meta_description'),
-                        Text::make('Meta Keywords', 'meta_keywords'),
                         Url::make('Canonical URL', 'canonical_url')
                             ->hint('Leave empty to use the blog page URL'),
                         Textarea::make('Custom Schema (JSON-LD)', 'custom_schema')

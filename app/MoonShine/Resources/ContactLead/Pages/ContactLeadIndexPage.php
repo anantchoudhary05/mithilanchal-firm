@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace App\MoonShine\Resources\ContactLead\Pages;
 
 use App\Models\ContactLead;
+use App\MoonShine\Handlers\ContactLeadExcelExportHandler;
 use App\MoonShine\Resources\ContactLead\ContactLeadResource;
 use App\Support\CmsUser;
+use App\Support\SerialNumber;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use MoonShine\Contracts\UI\ActionButtonContract;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Crud\Handlers\Handler;
 use MoonShine\Crud\QueryTags\QueryTag;
 use MoonShine\Laravel\Pages\Crud\IndexPage;
 use MoonShine\Support\AlpineJs;
@@ -41,11 +44,26 @@ final class ContactLeadIndexPage extends IndexPage
     protected function fields(): iterable
     {
         return [
+            SerialNumber::forIndexPage($this),
             ID::make()->sortable()->columnSelection(hideOnInit: true),
             Text::make('Name', 'name')->sortable(),
-            Text::make('Company', 'company'),
-            Email::make('Email', 'email'),
-            Phone::make('Phone', 'phone'),
+            Text::make('Company', 'company')->columnSelection(hideOnInit: true),
+            Email::make('Email', 'email')
+                ->link(
+                    static fn (mixed $value): string => filled($value) ? 'mailto:'.$value : '#',
+                    static fn (mixed $value): string => filled($value) ? (string) $value : '—',
+                    icon: 'envelope',
+                ),
+            Phone::make('Phone', 'phone')
+                ->link(
+                    static function (mixed $value): string {
+                        $digits = preg_replace('/\D+/', '', (string) $value) ?? '';
+
+                        return $digits !== '' ? 'tel:+91'.$digits : '#';
+                    },
+                    static fn (mixed $value): string => filled($value) ? (string) $value : '—',
+                    icon: 'phone',
+                ),
             Text::make('Requirement', 'requirement'),
             Text::make('Status', 'status')
                 ->changePreview(static fn (mixed $value): string => ContactLead::statusOptions()[(string) $value] ?? (string) $value)
@@ -92,10 +110,10 @@ final class ContactLeadIndexPage extends IndexPage
         $query = ContactLead::query();
 
         return [
-            ValueMetric::make('Total')->value((clone $query)->count())->icon('inbox')->columnSpan(3, 3),
-            ValueMetric::make('New')->value((clone $query)->incoming()->count())->icon('bell')->columnSpan(3, 3),
-            ValueMetric::make('Contacted')->value((clone $query)->where('status', ContactLead::STATUS_CONTACTED)->count())->icon('check-circle')->columnSpan(3, 3),
-            ValueMetric::make('Closed')->value((clone $query)->where('status', ContactLead::STATUS_CLOSED)->count())->icon('archive-box')->columnSpan(3, 3),
+            ValueMetric::make('Total')->value((clone $query)->count())->icon('inbox')->columnSpan(3, 3)->class('metric-accent'),
+            ValueMetric::make('New')->value((clone $query)->incoming()->count())->icon('bell')->iconColor(Color::YELLOW)->columnSpan(3, 3)->class('metric-accent metric-accent--new'),
+            ValueMetric::make('Contacted')->value((clone $query)->where('status', ContactLead::STATUS_CONTACTED)->count())->icon('check-circle')->iconColor(Color::GREEN)->columnSpan(3, 3)->class('metric-accent metric-accent--ok'),
+            ValueMetric::make('Closed')->value((clone $query)->where('status', ContactLead::STATUS_CLOSED)->count())->icon('archive-box')->columnSpan(3, 3)->class('metric-accent'),
         ];
     }
 
@@ -104,7 +122,10 @@ final class ContactLeadIndexPage extends IndexPage
      */
     protected function buttons(): ListOf
     {
-        return parent::buttons()->prepend($this->markContactedButton());
+        return parent::buttons()
+            ->prepend($this->whatsappButton())
+            ->prepend($this->callButton())
+            ->prepend($this->markContactedButton());
     }
 
     /**
@@ -151,6 +172,47 @@ final class ContactLeadIndexPage extends IndexPage
         return back();
     }
 
+    private function callButton(): ActionButton
+    {
+        return ActionButton::make(
+            '',
+            static function (mixed $item): string {
+                return $item instanceof ContactLead ? ($item->telHref() ?? '#') : '#';
+            },
+        )
+            ->withoutLoading()
+            ->success()
+            ->icon('phone')
+            ->class('btn-square')
+            ->canSee(static fn (mixed $item): bool => $item instanceof ContactLead && filled($item->telHref()))
+            ->customAttributes([
+                'title' => 'Call',
+                'aria-label' => 'Call',
+            ])
+            ->showInLine();
+    }
+
+    private function whatsappButton(): ActionButton
+    {
+        return ActionButton::make(
+            '',
+            static function (mixed $item): string {
+                return $item instanceof ContactLead ? ($item->whatsappHref() ?? '#') : '#';
+            },
+        )
+            ->blank()
+            ->withoutLoading()
+            ->info()
+            ->icon('chat-bubble-left-right')
+            ->class('btn-square')
+            ->canSee(static fn (mixed $item): bool => $item instanceof ContactLead && filled($item->whatsappHref()))
+            ->customAttributes([
+                'title' => 'WhatsApp',
+                'aria-label' => 'WhatsApp',
+            ])
+            ->showInLine();
+    }
+
     private function markContactedButton(): ActionButton
     {
         return ActionButton::make('')
@@ -175,5 +237,16 @@ final class ContactLeadIndexPage extends IndexPage
                 'aria-label' => 'Mark as contacted',
             ])
             ->showInLine();
+    }
+
+    /**
+     * @return ListOf<Handler>
+     */
+    protected function handlers(): ListOf
+    {
+        return new ListOf(Handler::class, [
+            ContactLeadExcelExportHandler::make('Export Excel')
+                ->icon('arrow-down-tray'),
+        ]);
     }
 }

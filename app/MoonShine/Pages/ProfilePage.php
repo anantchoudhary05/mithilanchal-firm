@@ -9,6 +9,7 @@ use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Laravel\Pages\ProfilePage as MoonShineProfilePage;
 use MoonShine\UI\Components\Heading;
 use MoonShine\UI\Components\Layout\Box;
+use MoonShine\UI\Components\Layout\Flex;
 use MoonShine\UI\Components\Tabs;
 use MoonShine\UI\Components\Tabs\Tab;
 use MoonShine\UI\Fields\ID;
@@ -28,15 +29,17 @@ class ProfilePage extends MoonShineProfilePage
         $userFields = array_filter([
             ID::make(),
 
-            moonshineConfig()->getUserField('name')
-                ? Text::make(__('moonshine::ui.resource.name'), moonshineConfig()->getUserField('name'))
-                    ->required()
-                : null,
+            Flex::make(array_values(array_filter([
+                moonshineConfig()->getUserField('name')
+                    ? Text::make(__('moonshine::ui.resource.name'), moonshineConfig()->getUserField('name'))
+                        ->required()
+                    : null,
 
-            moonshineConfig()->getUserField('username')
-                ? Text::make(__('moonshine::ui.login.username'), moonshineConfig()->getUserField('username'))
-                    ->required()
-                : null,
+                moonshineConfig()->getUserField('username')
+                    ? Text::make(__('moonshine::ui.login.username'), moonshineConfig()->getUserField('username'))
+                        ->required()
+                    : null,
+            ])))->itemsAlign('start')->justifyAlign('start'),
 
             Textarea::make('Author bio', 'bio')
                 ->hint('Used on public blog posts when a post does not set its own author profile.'),

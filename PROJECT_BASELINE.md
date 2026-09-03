@@ -772,6 +772,21 @@ Full file-by-file learning log: **`UPDATE_REPORT.md`**.
 - Tests: `ContactLeadTest` — store + thank-you redirect, optional email/message, reject bad phone, admin dashboard lists leads, authors do not see leads. Suite: 45 passing.
 - Still unused / still broken: no enquiry email/Mailable (mailer still `log`); product CMS; Vite on public pages; `link_attribute` UI; `assests` spelling.
 
+### 2026-09-03 — Admin dashboard UI (compact leads, farm green)
+
+- Why: Viewing a lead stacked every field vertically, so admins had to scroll. The rest of the dashboard felt the same: one block after another.
+- Added: `resources/views/moonshine/contact-lead-summary.blade.php` (2-column enquiry card + Call / WhatsApp / Email); `resources/views/moonshine/dashboard-welcome.blade.php` (greeting + shortcuts).
+- Changed (old → new): lead form stacked Previews → card + sticky Follow-up; dashboard metrics/tables compacted; CMS palette Purple → Green; phones/emails clickable; blog form related fields sit in rows.
+- Tests: compact enquiry card shows name, phone, `tel:` / `wa.me` links, and Follow-up.
+
+### 2026-09-03 — Table serial numbers + Contact enquiries Excel export
+
+- Why: Lists needed a visible row number that restarts at 1 when you filter (e.g. New). Admins needed one Excel file with New / Contacted / Closed as separate sheets.
+- Added: `app/Support/SerialNumber.php`; `app/Exports/ContactLeadExcelExporter.php` (ZipArchive `.xlsx`, no extra Composer package); `app/MoonShine/Handlers/ContactLeadExcelExportHandler.php` (`excel-export`).
+- Changed (old → new): dashboard, Contact enquiries, Blogs, Authors, and Roles tables start with **S.No.**; Contact enquiries top bar has **Export Excel**.
+- Tests: list shows S.No. and Export Excel; workbook has three sheets with the matching names; admin can download; author gets 403. Suite: 50 passing.
+- Still unused / still broken: no enquiry email/Mailable (mailer still `log`); product CMS; Vite on public pages; `link_attribute` UI; `assests` spelling.
+
 ---
 
 ## 10. Line-count sense of “where the product code is”

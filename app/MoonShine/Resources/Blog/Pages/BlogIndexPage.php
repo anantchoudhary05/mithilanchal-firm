@@ -7,6 +7,7 @@ namespace App\MoonShine\Resources\Blog\Pages;
 use App\Models\Blog;
 use App\MoonShine\Resources\Blog\BlogResource;
 use App\Support\CmsUser;
+use App\Support\SerialNumber;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use MoonShine\Contracts\UI\ActionButtonContract;
@@ -43,6 +44,7 @@ final class BlogIndexPage extends IndexPage
         $adminOnly = static fn (mixed $item): bool => CmsUser::isAdmin();
 
         return [
+            SerialNumber::forIndexPage($this),
             ID::make()->sortable()->columnSelection(hideOnInit: true),
             Image::make('Image', 'featured_image')
                 ->disk('public')
@@ -120,10 +122,10 @@ final class BlogIndexPage extends IndexPage
         }
 
         return [
-            ValueMetric::make('Total')->value((clone $query)->count())->icon('newspaper')->columnSpan(3, 3),
-            ValueMetric::make('Live')->value((clone $query)->where('status', 'published')->where('is_active', true)->count())->icon('check-circle')->columnSpan(3, 3),
-            ValueMetric::make('Pending')->value((clone $query)->where('status', 'review')->count())->icon('clock')->columnSpan(3, 3),
-            ValueMetric::make('Drafts')->value((clone $query)->where('status', 'draft')->count())->icon('pencil-square')->columnSpan(3, 3),
+            ValueMetric::make('Total')->value((clone $query)->count())->icon('newspaper')->columnSpan(3, 3)->class('metric-accent'),
+            ValueMetric::make('Live')->value((clone $query)->where('status', 'published')->where('is_active', true)->count())->icon('check-circle')->iconColor(Color::GREEN)->columnSpan(3, 3)->class('metric-accent metric-accent--ok'),
+            ValueMetric::make('Pending')->value((clone $query)->where('status', 'review')->count())->icon('clock')->iconColor(Color::YELLOW)->columnSpan(3, 3)->class('metric-accent metric-accent--new'),
+            ValueMetric::make('Drafts')->value((clone $query)->where('status', 'draft')->count())->icon('pencil-square')->columnSpan(3, 3)->class('metric-accent'),
         ];
     }
 

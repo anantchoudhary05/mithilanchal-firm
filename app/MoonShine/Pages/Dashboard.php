@@ -11,22 +11,26 @@ use App\MoonShine\Resources\Blog\BlogResource;
 use App\MoonShine\Resources\Blog\Pages\BlogFormPage;
 use App\MoonShine\Resources\ContactLead\ContactLeadResource;
 use App\MoonShine\Resources\ContactLead\Pages\ContactLeadFormPage;
+use App\MoonShine\Resources\ContactLead\Pages\ContactLeadIndexPage;
 use App\Support\CmsRole;
 use App\Support\CmsUser;
+use App\Support\SerialNumber;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Laravel\Pages\Page;
 use MoonShine\Laravel\TypeCasts\ModelCaster;
 use MoonShine\MenuManager\Attributes\SkipMenu;
 use MoonShine\Support\Enums\Color;
 use MoonShine\UI\Components\ActionButton;
+use MoonShine\UI\Components\FlexibleRender;
 use MoonShine\UI\Components\Heading;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Components\Layout\Column;
+use MoonShine\UI\Components\Layout\Flex;
 use MoonShine\UI\Components\Layout\Grid;
+use MoonShine\UI\Components\Link;
 use MoonShine\UI\Components\Metrics\Wrapped\ValueMetric;
 use MoonShine\UI\Components\Table\TableBuilder;
 use MoonShine\UI\Fields\Date;
-use MoonShine\UI\Fields\Email;
 use MoonShine\UI\Fields\Phone;
 use MoonShine\UI\Fields\Text;
 
@@ -94,24 +98,44 @@ class Dashboard extends Page
             ->limit(10)
             ->get();
 
+        $leadIndexUrl = toPage(page: ContactLeadIndexPage::class, resource: ContactLeadResource::class);
+        $blogIndexUrl = app(BlogResource::class)->getIndexPageUrl();
+        $blogCreateUrl = app(BlogResource::class)->getFormPageUrl();
+
         return [
-            Heading::make('Contact enquiries', 3),
+            $this->welcomeBanner(
+                'A quick look at new enquiries and content waiting for you.',
+                [
+                    ['label' => 'View all leads', 'url' => $leadIndexUrl, 'class' => 'lead-chip--call'],
+                    ['label' => 'Write a blog', 'url' => $blogCreateUrl, 'class' => 'lead-chip--mail'],
+                ],
+            ),
+            $this->sectionHeading('Contact enquiries', $leadIndexUrl, 'View all'),
             Grid::make([
                 Column::make([
-                    ValueMetric::make('New enquiries')->value($newLeads)->icon('inbox'),
+                    ValueMetric::make('New enquiries')->value($newLeads)->icon('inbox')->iconColor(Color::YELLOW)->class('metric-accent metric-accent--new'),
                 ], 4, 12),
                 Column::make([
-                    ValueMetric::make('Contacted')->value($contactedLeads)->icon('check-circle'),
+                    ValueMetric::make('Contacted')->value($contactedLeads)->icon('check-circle')->iconColor(Color::GREEN)->class('metric-accent metric-accent--ok'),
                 ], 4, 12),
                 Column::make([
-                    ValueMetric::make('Total enquiries')->value($totalLeads)->icon('users'),
+                    ValueMetric::make('Total enquiries')->value($totalLeads)->icon('users')->class('metric-accent'),
                 ], 4, 12),
             ]),
             Box::make([
                 TableBuilder::make([
+                    SerialNumber::field(),
                     Text::make('Name', 'name'),
-                    Email::make('Email', 'email'),
-                    Phone::make('Phone', 'phone'),
+                    Phone::make('Phone', 'phone')
+                        ->link(
+                            static function (mixed $value): string {
+                                $digits = preg_replace('/\D+/', '', (string) $value) ?? '';
+
+                                return $digits !== '' ? 'tel:+91'.$digits : '#';
+                            },
+                            static fn (mixed $value): string => filled($value) ? (string) $value : '—',
+                            icon: 'phone',
+                        ),
                     Text::make('Requirement', 'requirement'),
                     Text::make('Status', 'status')
                         ->changePreview(static fn (mixed $value): string => ContactLead::statusOptions()[(string) $value] ?? (string) $value)
@@ -124,46 +148,54 @@ class Dashboard extends Page
                 ], $recentLeads)
                     ->cast(new ModelCaster(ContactLead::class))
                     ->buttons($this->leadRowButtons())
-                    ->stickyButtons(),
+                    ->stickyButtons()
+                    ->withNotFound(),
             ]),
-            Heading::make('Content overview', 3),
+            $this->sectionHeading('Content overview', $blogIndexUrl, 'View blogs'),
             Grid::make([
                 Column::make([
-                    ValueMetric::make('Published')->value($published)->icon('check-circle'),
+                    ValueMetric::make('Published')->value($published)->icon('check-circle')->iconColor(Color::GREEN)->class('metric-accent metric-accent--ok'),
                 ], 3, 12),
                 Column::make([
-                    ValueMetric::make('Awaiting approval')->value($pending)->icon('clock'),
+                    ValueMetric::make('Awaiting approval')->value($pending)->icon('clock')->iconColor(Color::YELLOW)->class('metric-accent metric-accent--new'),
                 ], 3, 12),
                 Column::make([
-                    ValueMetric::make('Drafts')->value($drafts)->icon('pencil-square'),
+                    ValueMetric::make('Drafts')->value($drafts)->icon('pencil-square')->class('metric-accent'),
                 ], 3, 12),
                 Column::make([
-                    ValueMetric::make('Authors')->value($authors)->icon('users'),
+                    ValueMetric::make('Authors')->value($authors)->icon('users')->class('metric-accent'),
                 ], 3, 12),
             ]),
-            Heading::make('Authors and post counts', 3),
-            Box::make([
-                TableBuilder::make([
-                    Text::make('Author', 'name'),
-                    Email::make('Email', 'email'),
-                    Text::make('Total posts', 'blogs_count'),
-                    Text::make('Published', 'published_count'),
-                    Text::make('Pending', 'pending_count'),
-                    Text::make('Drafts', 'draft_count'),
-                ], $authorRows)
-                    ->cast(new ModelCaster(MoonshineUser::class))
-                    ->stickyButtons(),
-            ]),
-            Heading::make('Posts waiting for approval', 3),
-            Box::make([
-                TableBuilder::make([
-                    Text::make('Title', 'title'),
-                    Text::make('Author', 'author_name'),
-                    Date::make('Submitted', 'updated_at')->format('d M Y'),
-                ], $pendingPosts)
-                    ->cast(new ModelCaster(Blog::class))
-                    ->buttons($this->blogRowButtons())
-                    ->stickyButtons(),
+            Grid::make([
+                Column::make([
+                    Heading::make('Authors and post counts', 4),
+                    Box::make([
+                        TableBuilder::make([
+                            SerialNumber::field(),
+                            Text::make('Author', 'name'),
+                            Text::make('Published', 'published_count'),
+                            Text::make('Pending', 'pending_count'),
+                            Text::make('Drafts', 'draft_count'),
+                        ], $authorRows)
+                            ->cast(new ModelCaster(MoonshineUser::class))
+                            ->withNotFound(),
+                    ]),
+                ], 6, 12),
+                Column::make([
+                    Heading::make('Posts waiting for approval', 4),
+                    Box::make([
+                        TableBuilder::make([
+                            SerialNumber::field(),
+                            Text::make('Title', 'title'),
+                            Text::make('Author', 'author_name'),
+                            Date::make('Submitted', 'updated_at')->format('d M Y'),
+                        ], $pendingPosts)
+                            ->cast(new ModelCaster(Blog::class))
+                            ->buttons($this->blogRowButtons())
+                            ->stickyButtons()
+                            ->withNotFound(),
+                    ]),
+                ], 6, 12),
             ]),
         ];
     }
@@ -187,25 +219,36 @@ class Dashboard extends Page
             ->limit(10)
             ->get();
 
+        $blogIndexUrl = app(BlogResource::class)->getIndexPageUrl();
+        $blogCreateUrl = app(BlogResource::class)->getFormPageUrl();
+
         return [
+            $this->welcomeBanner(
+                'Draft, preview, and submit posts for approval from here.',
+                [
+                    ['label' => 'My blogs', 'url' => $blogIndexUrl, 'class' => 'lead-chip--call'],
+                    ['label' => 'Write a post', 'url' => $blogCreateUrl, 'class' => 'lead-chip--mail'],
+                ],
+            ),
             Heading::make('Your writing', 3),
             Grid::make([
                 Column::make([
-                    ValueMetric::make('My posts')->value($total)->icon('newspaper'),
+                    ValueMetric::make('My posts')->value($total)->icon('newspaper')->class('metric-accent'),
                 ], 3, 12),
                 Column::make([
-                    ValueMetric::make('Live on website')->value($published)->icon('check-circle'),
+                    ValueMetric::make('Live on website')->value($published)->icon('check-circle')->iconColor(Color::GREEN)->class('metric-accent metric-accent--ok'),
                 ], 3, 12),
                 Column::make([
-                    ValueMetric::make('Awaiting approval')->value($pending)->icon('clock'),
+                    ValueMetric::make('Awaiting approval')->value($pending)->icon('clock')->iconColor(Color::YELLOW)->class('metric-accent metric-accent--new'),
                 ], 3, 12),
                 Column::make([
-                    ValueMetric::make('Drafts')->value($drafts)->icon('pencil-square'),
+                    ValueMetric::make('Drafts')->value($drafts)->icon('pencil-square')->class('metric-accent'),
                 ], 3, 12),
             ]),
-            Heading::make('Recent posts', 3),
+            $this->sectionHeading('Recent posts', $blogIndexUrl, 'View all'),
             Box::make([
                 TableBuilder::make([
+                    SerialNumber::field(),
                     Text::make('Title', 'title'),
                     Text::make('Status', 'status')
                         ->changePreview(static fn (mixed $value): string => match ($value) {
@@ -225,9 +268,32 @@ class Dashboard extends Page
                 ], $recent)
                     ->cast(new ModelCaster(Blog::class))
                     ->buttons($this->blogRowButtons())
-                    ->stickyButtons(),
+                    ->stickyButtons()
+                    ->withNotFound(),
             ]),
         ];
+    }
+
+    /**
+     * @param  list<array{label: string, url: string, class?: string}>  $actions
+     */
+    private function welcomeBanner(string $subtitle, array $actions): FlexibleRender
+    {
+        return FlexibleRender::make(
+            view('moonshine.dashboard-welcome', [
+                'name' => CmsUser::user()?->name ?: (CmsUser::isAuthor() ? 'Author' : 'Admin'),
+                'subtitle' => $subtitle,
+                'actions' => $actions,
+            ]),
+        );
+    }
+
+    private function sectionHeading(string $title, string $url, string $label): Flex
+    {
+        return Flex::make([
+            Heading::make($title, 3),
+            Link::make($url, $label)->button()->icon('arrow-right'),
+        ])->justifyAlign('between')->itemsAlign('center');
     }
 
     /**
