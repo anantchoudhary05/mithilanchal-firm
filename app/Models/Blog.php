@@ -150,7 +150,7 @@ class Blog extends Model
         $this->is_active = true;
 
         if (blank($this->published_at)) {
-            $this->published_at = now();
+            $this->published_at = Carbon::now();
         }
 
         $this->save();
