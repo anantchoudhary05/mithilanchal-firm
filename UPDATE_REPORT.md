@@ -1,9 +1,10 @@
 # Mithilanchal Farms — Update Report
 
-**Date:** 2 September 2026  
+**Latest session:** 4 September 2026 — see [section 12](#12-4-september-2026--blog-seo-label--related-sidebar)  
+**Original date:** 2 September 2026  
 **Compared against:** `PROJECT_BASELINE.md` (git `main` @ `bea46db`)  
-**Tests:** 34 Pest tests passing (`php artisan test`)  
-**Required on your machine:** `php artisan migrate` (MySQL was not running during this session, so the new columns/role were applied in tests only)
+**Tests:** 54 Pest tests passing (`php artisan test`)  
+**Required on your machine:** `php artisan migrate` (MySQL was not running during the 2 Sep session, so the new columns/role were applied in tests only)
 
 This file is the learning log for this change set. For each file, it records **what changed**, **why**, and **how the CMS pieces connect**.
 
@@ -432,3 +433,66 @@ Empty statuses still get a sheet with headers only.
 4. Open a lead. Details should sit in a card with Call / WhatsApp; status/notes on the right.
 5. Click **Export Excel**. Open the file — three sheets: New, Contacted, Closed.
 6. An Author login must **not** see leads or the export button.
+
+---
+
+## 12. 4 September 2026 — Blog SEO label + related sidebar
+
+**Tests:** 54 Pest tests passing (`php artisan test`)
+
+### 12.1 What you asked for, and what was delivered
+
+| # | Request | Result |
+|---|---|---|
+| 1 | Blog backend SEO tab: rename **SEO Title** to **Meta Title** | Label only. Database column stays `meta_title`. Hint explains it becomes the browser / search-result title |
+| 2 | Related products and related blogs on the **right** of the article | Two-column layout: article left, sticky sidebar right. Stacks on tablet/phone |
+| 3 | Related product cards in an **auto-slide carousel**, with details and **Enquire Now** | One product per slide. Auto-rotates every 4.5s, pauses on hover, prev/next + dots. Card has image, badge, grade, description, origin, Enquire Now, and View product details |
+
+### 12.2 How the public blog page works now
+
+```
+/blog/{slug}
+  ├─ Article (left): type, title, byline, image, TOC, body, FAQ
+  └─ Sidebar (right, sticky)
+       ├─ Related Products
+       │    ├─ From the post’s Related Products JSON when titles exist
+       │    ├─ Else the 6 catalog products (same range as /products)
+       │    └─ Each card → Enquire Now = /contact-us?product=Title#contact-form
+       └─ Related Blogs
+            ├─ Chosen Related Blogs IDs when set
+            └─ Else up to 4 other published posts (thumbnail + title + Read more)
+```
+
+Contact form reads `?product=` and pre-selects a matching requirement (Premium / Roasted / Flavoured / Bulk / Private Label / Other) and fills the message with “I would like to enquire about {product}.”
+
+### 12.3 File-by-file
+
+#### New files
+
+| File | Role |
+|---|---|
+| `app/Support/ProductCatalog.php` | Shared product cards for the sidebar: image, grade, badge, description, enquiry URL. Matches titles from the CMS JSON to the catalog when extra fields are blank |
+
+#### Edited files
+
+| File | Change (old → new) |
+|---|---|
+| `app/MoonShine/Resources/Blog/Pages/BlogFormPage.php` | SEO tab label **SEO Title** → **Meta Title**. Related Products JSON now has title, grade, badge, description, image path, URL |
+| `app/Models/Blog.php` | Added `relatedProductCards()` and `sidebarRelatedBlogs()` |
+| `app/Http/Controllers/BlogController.php` | Show + preview pass the sidebar collections |
+| `app/Http/Controllers/ContactController.php` | Reads `product` query and passes enquiry defaults |
+| `resources/views/blog/show.blade.php` | Related blocks moved from under the article into a right sidebar |
+| `resources/views/ContactUs.blade.php` | Requirement select + message prefilled from `?product=` |
+| `public/assests/css/blog.css` | Two-column detail layout, product carousel, related-blog list |
+| `public/assests/js/style.js` | Auto-slide for `[data-product-carousel]` |
+| `database/factories/BlogFactory.php` | Sample related products include grade, badge, description, image |
+| `tests/Feature/BlogTest.php` | Sidebar, carousel, Meta Title CMS label |
+| `tests/Feature/ContactLeadTest.php` | Contact form prefill from product enquiry |
+
+### 12.4 How to try it
+
+1. CMS: open a blog → **SEO Control**. The first field is **Meta Title** (not SEO Title). Saving still writes `meta_title`.
+2. CMS: **Related & FAQ** → add related blogs and products (title is enough; extra fields fill from the catalog when the name matches).
+3. Open `/blog/{slug}` on desktop. Products and blogs sit on the **right**. Product cards rotate by themselves.
+4. Click **Enquire Now**. Contact form should open with the product in the requirement/message.
+5. On a phone, the sidebar drops **below** the article.

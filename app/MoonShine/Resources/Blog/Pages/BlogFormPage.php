@@ -172,7 +172,8 @@ final class BlogFormPage extends FormPage
 
                     Tab::make('SEO Control', [
                         Flex::make([
-                            Text::make('SEO Title', 'meta_title'),
+                            Text::make('Meta Title', 'meta_title')
+                                ->hint('Browser tab and search-result title. Leave empty to copy the blog title.'),
                             Text::make('Meta Keywords', 'meta_keywords'),
                         ])->itemsAlign('start')->justifyAlign('start'),
                         Textarea::make('Meta Description', 'meta_description'),
@@ -191,8 +192,18 @@ final class BlogFormPage extends FormPage
                         Json::make('Related Products', 'related_products')
                             ->fields([
                                 Text::make('Product Title', 'title'),
-                                Text::make('Product URL', 'url'),
+                                Text::make('Grade / Type', 'grade')
+                                    ->hint('Example: Premium Grade, Roasted, Bulk Supply'),
+                                Text::make('Badge', 'badge')
+                                    ->hint('Optional chip on the card, e.g. Best Seller'),
+                                Textarea::make('Short Description', 'description'),
+                                Text::make('Image Path', 'image')
+                                    ->hint('Example: assests/img/hq-grains.jpg or a full image URL'),
+                                Text::make('Product URL', 'url')
+                                    ->hint('Leave empty to use the Products page'),
                             ])
+                            ->vertical()
+                            ->creatable()
                             ->removable(),
 
                         Json::make('FAQ Section', 'faq')

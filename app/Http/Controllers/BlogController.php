@@ -34,11 +34,13 @@ class BlogController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        $relatedBlogs = $blog->relatedBlogs();
+        $relatedBlogs = $blog->sidebarRelatedBlogs();
+        $relatedProducts = $blog->relatedProductCards();
 
         return view('blog.show', [
             'blog' => $blog,
             'relatedBlogs' => $relatedBlogs,
+            'relatedProducts' => $relatedProducts,
             'meta_title' => $blog->seo_title,
             'meta_description' => $blog->meta_description ?: $blog->excerpt,
             'meta_keywords' => $blog->meta_keywords,
@@ -61,7 +63,8 @@ class BlogController extends Controller
 
         return view('blog.show', [
             'blog' => $blog,
-            'relatedBlogs' => $blog->relatedBlogs(),
+            'relatedBlogs' => $blog->sidebarRelatedBlogs(),
+            'relatedProducts' => $blog->relatedProductCards(),
             'meta_title' => 'Preview: '.$blog->seo_title,
             'meta_description' => $blog->meta_description ?: $blog->excerpt,
             'meta_keywords' => $blog->meta_keywords,

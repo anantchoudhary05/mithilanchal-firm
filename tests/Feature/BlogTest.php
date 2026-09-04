@@ -2,6 +2,7 @@
 
 use App\Models\Blog;
 use App\Models\MoonshineUser;
+use App\MoonShine\Resources\Blog\BlogResource;
 use App\Support\CmsRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -239,6 +240,93 @@ it('maps blog statuses to short cms labels', function () {
     expect(Blog::factory()->create(['status' => 'review'])->statusLabel())->toBe('Pending');
     expect(Blog::factory()->create(['status' => 'published', 'is_active' => true])->statusLabel())->toBe('Approved');
     expect(Blog::factory()->draft()->create()->statusLabel())->toBe('Draft');
+});
+
+it('shows related products in a right-hand carousel with an enquiry button', function () {
+    $related = Blog::factory()->create([
+        'title' => 'Fox Nut Processing Guide',
+        'slug' => 'fox-nut-processing-guide',
+        'status' => 'published',
+        'is_active' => true,
+        'published_at' => now()->subDay(),
+    ]);
+
+    $blog = Blog::factory()->create([
+        'title' => 'Makhana Wholesale Guide',
+        'slug' => 'makhana-wholesale-guide',
+        'status' => 'published',
+        'is_active' => true,
+        'published_at' => now()->subHour(),
+        'related_blog_ids' => [$related->id],
+        'related_products' => [
+            [
+                'title' => 'Premium Makhana',
+                'grade' => 'Premium Grade',
+                'badge' => 'Best Seller',
+                'description' => 'Large, clean fox nuts for retail brands.',
+                'url' => '/products',
+            ],
+        ],
+    ]);
+
+    $this->get(route('blog.show', $blog->slug))
+        ->assertOk()
+        ->assertSee('blog-detail-sidebar', false)
+        ->assertSee('Related Products')
+        ->assertSee('related-product-carousel', false)
+        ->assertSee('Premium Makhana')
+        ->assertSee('Large, clean fox nuts for retail brands.')
+        ->assertSee('Enquire Now')
+        ->assertSee(route('ContactUs', ['product' => 'Premium Makhana']), false)
+        ->assertSee('Related Blogs')
+        ->assertSee('Fox Nut Processing Guide')
+        ->assertSee('Read more')
+        ->assertDontSee('related-chip', false);
+});
+
+it('falls back to other published posts in the related blogs sidebar', function () {
+    $other = Blog::factory()->create([
+        'title' => 'Harvest Season Notes',
+        'slug' => 'harvest-season-notes',
+        'status' => 'published',
+        'is_active' => true,
+        'published_at' => now()->subDay(),
+        'related_products' => [],
+        'related_blog_ids' => [],
+    ]);
+
+    $blog = Blog::factory()->create([
+        'title' => 'Standalone Makhana Story',
+        'slug' => 'standalone-makhana-story',
+        'status' => 'published',
+        'is_active' => true,
+        'published_at' => now(),
+        'related_products' => [],
+        'related_blog_ids' => [],
+    ]);
+
+    $this->get(route('blog.show', $blog->slug))
+        ->assertOk()
+        ->assertSee('Related Products')
+        ->assertSee('Related Blogs')
+        ->assertSee('Harvest Season Notes');
+
+    expect($blog->fresh()->sidebarRelatedBlogs()->pluck('id')->all())->toContain($other->id);
+});
+
+it('labels the blog seo field as meta title', function () {
+    $admin = MoonshineUser::query()->create([
+        'name' => 'Seo Admin',
+        'email' => 'seo-admin@example.com',
+        'password' => Hash::make('password'),
+        'moonshine_user_role_id' => CmsRole::ADMIN,
+    ]);
+
+    $this->actingAs($admin, 'moonshine')
+        ->get(app(BlogResource::class)->getFormPageUrl())
+        ->assertOk()
+        ->assertSee('Meta Title')
+        ->assertDontSee('>SEO Title<', false);
 });
 
 it('lets an author edit their own approved post but not delete it', function () {

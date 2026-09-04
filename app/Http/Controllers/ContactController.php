@@ -4,15 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreContactLeadRequest;
 use App\Models\ContactLead;
+use App\Support\ProductCatalog;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ContactController extends Controller
 {
-    public function show(): View
+    public function show(Request $request): View
     {
+        $product = trim((string) $request->query('product', ''));
+
         return view('ContactUs', [
             'requirements' => ContactLead::REQUIREMENTS,
+            'enquiryProduct' => $product !== '' ? $product : null,
+            'enquiryRequirement' => ProductCatalog::requirementFor($product !== '' ? $product : null),
         ]);
     }
 

@@ -7,6 +7,8 @@ namespace App\MoonShine\Layouts;
 use App\MoonShine\Pages\ProfilePage;
 use App\MoonShine\Resources\Blog\BlogResource;
 use App\MoonShine\Resources\ContactLead\ContactLeadResource;
+use App\MoonShine\Resources\Homepage\HeroBannerResource;
+use App\MoonShine\Resources\Homepage\OfferPageResource;
 use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
 use App\Support\CmsUser;
@@ -219,6 +221,10 @@ CSS
             MenuGroup::make('Content', [
                 MenuItem::make(BlogResource::class, CmsUser::isAuthor() ? 'My Blogs' : 'Blogs'),
             ]),
+            MenuGroup::make('Homepage', [
+                MenuItem::make(HeroBannerResource::class, 'Banner pages'),
+                MenuItem::make(OfferPageResource::class, 'Offer pages'),
+            ])->canSee(static fn (mixed $item): bool => CmsUser::isAdmin()),
             MenuGroup::make('People', [
                 MenuItem::make(MoonShineUserResource::class, 'Authors'),
                 MenuItem::make(MoonShineUserRoleResource::class, 'Roles'),

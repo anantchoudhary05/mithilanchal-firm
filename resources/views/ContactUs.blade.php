@@ -203,7 +203,7 @@
               <select id="requirement" name="requirement" required>
                 <option value="">Select your requirement</option>
                 @foreach ($requirements as $option)
-                  <option value="{{ $option }}" @selected(old('requirement') === $option)>{{ $option }}</option>
+                  <option value="{{ $option }}" @selected(old('requirement', $enquiryRequirement ?? '') === $option)>{{ $option }}</option>
                 @endforeach
               </select>
               @error('requirement')
@@ -234,7 +234,7 @@
                 name="message"
                 rows="5"
                 placeholder="Tell us about your requirement..."
-              >{{ old('message') }}</textarea>
+              >{{ old('message', ! empty($enquiryProduct) ? 'I would like to enquire about '.$enquiryProduct.'.' : '') }}</textarea>
               @error('message')
                 <p class="form-error">{{ $message }}</p>
               @enderror

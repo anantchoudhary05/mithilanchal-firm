@@ -1,5 +1,6 @@
 <?php
 
+use App\Exports\ContactLeadExcelExporter;
 use App\Models\ContactLead;
 use App\Models\MoonshineUser;
 use App\MoonShine\Resources\ContactLead\ContactLeadResource;
@@ -30,6 +31,14 @@ it('shows the contact form on the public contact page', function () {
         ->assertSee('name="name"', false)
         ->assertSee(route('contact.store'), false)
         ->assertSee('pattern="[0-9]{10}"', false);
+});
+
+it('prefills the contact form from a related product enquiry', function () {
+    $this->get(route('ContactUs', ['product' => 'Roasted Makhana']))
+        ->assertOk()
+        ->assertSee('selected', false)
+        ->assertSee('Roasted Makhana', false)
+        ->assertSee('I would like to enquire about Roasted Makhana.', false);
 });
 
 it('stores a contact enquiry and redirects to the thank you page', function () {
@@ -251,7 +260,7 @@ it('exports new contacted and closed enquiries on three excel sheets', function 
         'requirement' => 'Private Label',
     ]);
 
-    $path = (new \App\Exports\ContactLeadExcelExporter)->writeWorkbook();
+    $path = (new ContactLeadExcelExporter)->writeWorkbook();
     $zip = new ZipArchive;
 
     expect($zip->open($path))->toBeTrue();

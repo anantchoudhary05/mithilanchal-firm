@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Support\ProductCatalog;
 use Database\Factories\BlogFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -250,6 +252,38 @@ class Blog extends Model
             ->get()
             ->sortBy(fn (Blog $blog) => $ids->search($blog->id))
             ->values();
+    }
+
+    /**
+     * @return Collection<int, array{title: string, description: string, image_url: string, url: string, badge: ?string, grade: string, enquiry_url: string}>
+     */
+    public function relatedProductCards(): Collection
+    {
+        $items = collect($this->related_products ?? [])
+            ->filter(fn (mixed $product): bool => is_array($product) && filled($product['title'] ?? null))
+            ->map(fn (array $product): array => ProductCatalog::normalize($product))
+            ->values();
+
+        return $items->isNotEmpty() ? $items : ProductCatalog::defaults();
+    }
+
+    /**
+     * @return Collection<int, Blog>
+     */
+    public function sidebarRelatedBlogs(int $limit = 4): Collection
+    {
+        $related = $this->relatedBlogs();
+
+        if ($related->isNotEmpty()) {
+            return $related->take($limit)->values();
+        }
+
+        return static::published()
+            ->whereKeyNot($this->getKey())
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get();
     }
 
     public static function clearBlogCaches(): void

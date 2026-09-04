@@ -3,14 +3,13 @@
 use App\Http\Controllers\AdminLogoutController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TinyMceImageUploadController;
 use Illuminate\Support\Facades\Route;
 use MoonShine\Laravel\Http\Middleware\Authenticate as MoonShineAuthenticate;
 
-Route::get('/', function () {
-    return view('index');
-})->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 Route::get('/product', function () {
     return view('Products');

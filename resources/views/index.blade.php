@@ -1,48 +1,44 @@
 <x-layout>
 
+    @php
+        $heroSlides = $heroSlides ?? \App\Models\HomepageSection::carouselSlides();
+        $popupOffer = $popupOffer ?? \App\Models\HomepageSection::activePopupOffer();
+        $firstVisible = $heroSlides->first(function ($slide) use ($popupOffer) {
+            return ! ($slide->isOffer() && $popupOffer && $slide->id && (int) $slide->id === (int) $popupOffer->id);
+        });
+    @endphp
+
     <!-- =========================
      Hero section
     ========================= -->
 
-    <section class="hero hero-slideshow">
+    <section class="hero hero-slideshow" data-hero-carousel>
 
-        <div class="hero-slides" aria-hidden="true">
-            <div class="hero-slide is-active" style="background-image: url('{{ asset('assests/img/hq-roasted.jpg') }}')"></div>
-            <div class="hero-slide" style="background-image: url('{{ asset('assests/img/hq-bowl.jpg') }}')"></div>
-            <div class="hero-slide" style="background-image: url('{{ asset('assests/img/hq-roast-bihar.jpg') }}')"></div>
-            <div class="hero-slide" style="background-image: url('{{ asset('assests/img/hq-white.jpg') }}')"></div>
+        <div class="hero-slides">
+            @forelse($heroSlides as $slide)
+                @if($slide->isOffer())
+                    <x-hero-offer-slide
+                        :section="$slide"
+                        :active="$firstVisible && $firstVisible === $slide"
+                        :deferred="$popupOffer && $slide->id && (int) $slide->id === (int) $popupOffer->id"
+                    />
+                @else
+                    <x-hero-banner-slide
+                        :section="$slide"
+                        :active="$firstVisible && $firstVisible === $slide"
+                    />
+                @endif
+            @empty
+                <x-hero-banner-slide :section="\App\Models\HomepageSection::fallbackBanners()->first()" :active="true" />
+            @endforelse
         </div>
 
-        <div class="hero-overlay"></div>
-
-        <div class="container hero-content">
-
-            <div class="eyebrow light">
-                FROM MITHILA'S PONDS
-            </div>
-
-            <h1>
-                Rooted in Mithilanchal.
-                <span>Grown with care.</span>
-            </h1>
-
-            <p>
-                Premium fox nuts from Darbhanga — popped by local hands, graded with honesty, and shared with homes and businesses that value the real taste of Bihar.
-            </p>
-
-            <div class="hero-buttons">
-
-                <a href="{{ route('OurStory') }}" class="btn btn-primary">
-                    Discover Our Story
-                </a>
-
-                <a href="{{ route('Product') }}" class="btn btn-white">
-                    Explore Products
-                </a>
-
-            </div>
-
-        </div>
+        <button class="hero-nav hero-nav--prev" type="button" data-hero-prev aria-label="Previous slide">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <button class="hero-nav hero-nav--next" type="button" data-hero-next aria-label="Next slide">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
 
         <div class="hero-dots"></div>
 

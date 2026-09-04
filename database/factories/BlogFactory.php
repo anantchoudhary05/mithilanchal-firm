@@ -45,8 +45,22 @@ class BlogFactory extends Factory
                 ['question' => 'Are fox nuts healthy?', 'answer' => 'Yes, they are high in protein and low in fat when roasted.'],
             ],
             'related_products' => [
-                ['title' => 'Premium Makhana', 'url' => '/product'],
-                ['title' => 'Roasted Makhana', 'url' => '/product'],
+                [
+                    'title' => 'Premium Makhana',
+                    'grade' => 'Premium Grade',
+                    'badge' => 'Best Seller',
+                    'description' => 'Large, clean and carefully graded Makhana suitable for premium retail and food brands.',
+                    'image' => 'assests/img/hq-white.jpg',
+                    'url' => '/products',
+                ],
+                [
+                    'title' => 'Roasted Makhana',
+                    'grade' => 'Roasted',
+                    'badge' => 'Ready to Eat',
+                    'description' => 'Lightly roasted Makhana with a delicious crunch, perfect for healthy snacking.',
+                    'image' => 'assests/img/hq-roasted.jpg',
+                    'url' => '/products',
+                ],
             ],
             'related_blog_ids' => [],
         ];

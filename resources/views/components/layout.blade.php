@@ -7,7 +7,11 @@
     'robots' => 'index, follow',
     'custom_schema' => null,
     'og_type' => 'website',
+    'popupOffer' => null,
 ])
+@php
+    $popupOffer = $popupOffer ?: \App\Models\HomepageSection::activePopupOffer();
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,7 +43,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('assests/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assests/css/contact.css') }}">
@@ -48,6 +52,7 @@
     <link rel="stylesheet" href="{{ asset('assests/css/WhyChooseUs.css') }}">
     <link rel="stylesheet" href="{{ asset('assests/css/blog.css') }}">
     <link rel="stylesheet" href="{{ asset('assests/css/theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('assests/css/homepage.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     @if(!empty($custom_schema))
@@ -135,6 +140,10 @@
     >
         <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
     </a>
+
+    @if($popupOffer)
+        <x-offer-popup :section="$popupOffer" />
+    @endif
 
     <script src="{{ asset('assests/js/style.js') }}"></script>
 </body>
