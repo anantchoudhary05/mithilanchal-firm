@@ -1,9 +1,9 @@
 # Mithilanchal Farms — Update Report
 
-**Latest session:** 4 September 2026 — see [section 12](#12-4-september-2026--blog-seo-label--related-sidebar)  
+**Latest session:** 4 September 2026 — see [section 13](#13-4-september-2026--city-page--location-module)  
 **Original date:** 2 September 2026  
 **Compared against:** `PROJECT_BASELINE.md` (git `main` @ `bea46db`)  
-**Tests:** 54 Pest tests passing (`php artisan test`)  
+**Tests:** 72 Pest tests passing (`php artisan test`)  
 **Required on your machine:** `php artisan migrate` (MySQL was not running during the 2 Sep session, so the new columns/role were applied in tests only)
 
 This file is the learning log for this change set. For each file, it records **what changed**, **why**, and **how the CMS pieces connect**.
@@ -496,3 +496,112 @@ Contact form reads `?product=` and pre-selects a matching requirement (Premium /
 3. Open `/blog/{slug}` on desktop. Products and blogs sit on the **right**. Product cards rotate by themselves.
 4. Click **Enquire Now**. Contact form should open with the product in the requirement/message.
 5. On a phone, the sidebar drops **below** the article.
+
+---
+
+## 13. 4 September 2026 — City Page / Location module
+
+**Tests:** 72 Pest tests passing (`php artisan test`)
+
+### 13.1 Completed
+
+Reusable city landing pages, not one static HTML file per city.
+
+```
+ADMIN (Content → Location / City Pages)
+  → create city, pick template, toggle sections, fill content, SEO
+  → save draft / preview / publish
+        DATABASE (city_pages + city_page_sections)
+           → LOCATION dropdown (published only)
+           → /location/{slug}
+           → selected template + enabled sections only + city SEO
+```
+
+| # | Request | Result |
+|---|---|---|
+| 1 | Content → Location / City Pages | MoonShine resource under **Content**, admin-only |
+| 2 | City CRUD + publish + preview + delete | List: city, slug, status, template, published, updated. Actions: Preview, Publish/Unpublish, Edit, Delete (MoonShine confirm) |
+| 3 | SEO-friendly unique slug | Auto from city name, editable, uniquified (`patna`, `patna-1`). Public URL `/location/{slug}` |
+| 4 | Three templates, one content system | `standard`, `modern`, `minimal` — same sections, different Blade wrappers + CSS |
+| 5 | Section ON/OFF | Each section has Enable + display order. Frontend skips disabled rows (not CSS hide) |
+| 6 | Repeatable section content | JSON `content` on `city_page_sections` (highlights, places, FAQs, gallery, etc.) |
+| 7 | Location nav dropdown | Published cities only, desktop hover + mobile accordion |
+| 8 | SEO + OG + FAQ schema | Per-city title, description, keywords, canonical, OG, JSON-LD WebPage (+ FAQ when enabled) |
+| 9 | Preview drafts | `GET /cms/locations/{slug}/preview` — admin only, `noindex` |
+
+### 13.2 Files created
+
+| File | Role |
+|---|---|
+| `database/migrations/2026_09_04_170000_create_city_pages_tables.php` | `city_pages` + `city_page_sections` |
+| `app/Support/CityPageBlueprint.php` | Templates, section types, icons, default copy (`{city}` / `{state}` tokens) |
+| `app/Models/CityPage.php` | Slug, publish, section sync, nav cache, JSON-LD |
+| `app/Models/CityPageSection.php` | Enabled row + JSON content helpers |
+| `database/factories/CityPageFactory.php` | Published / draft / template states |
+| `app/Http/Controllers/LocationController.php` | Public show + CMS preview |
+| `app/MoonShine/Resources/CityPage/*` | Admin list, form (tabs: Basic / Sections / SEO), publish actions |
+| `resources/views/location/templates/{standard,modern,minimal}.blade.php` | Three layouts |
+| `resources/views/location/partials/*.blade.php` | One partial per section type |
+| `public/assests/css/location.css` | City page + nav dropdown |
+| `tests/Feature/CityPageTest.php` | Public, nav, templates, toggles, SEO, preview, CMS visibility |
+
+### 13.3 Database
+
+```text
+city_pages
+  city_name (unique), state, slug (unique), template, status,
+  seo_title, meta_description, meta_keywords, canonical_url,
+  og_title, og_description, og_image, published_at
+
+city_page_sections
+  city_page_id, section_type, is_enabled, display_order, content JSON
+  unique (city_page_id, section_type)
+```
+
+Run:
+
+```bash
+php artisan migrate
+```
+
+### 13.4 Routes added
+
+| Method | URI | Name |
+|---|---|---|
+| GET | `/location/{slug}` | `location.show` |
+| GET | `/cms/locations/{cityPage}/preview` | `cms.locations.preview` |
+
+Sitemap includes published city URLs. Layout gained `og_title` / `og_description` / `og_image` and `location.css`.
+
+### 13.5 Important technical decisions
+
+- **Storage:** One `city_pages` row per city; sections live in `city_page_sections`, not a table per city. Homepage slides stay on `homepage_sections` (different job: home carousel, not a page builder).
+- **Templates:** `CityPage.template` picks a Blade view. Section data is shared. Minimal skips decorative images in markup.
+- **Toggles + order:** `is_enabled` + numeric `display_order` (MoonShine has no drag-and-drop that fits this form). Frontend `enabledOrderedSections()`.
+- **Admin form:** Virtual JSON object fields `sec_{type}` are stripped in `saving` and written to section rows in `saved`. Images use the existing public disk + `city-pages/` folder.
+- **Placeholders:** `{city}` and `{state}` are replaced at render time so the same defaults work for every city.
+- **Nav:** Cached as plain arrays (`city_pages.nav.rows`) for one hour, then rebuilt into models. Eloquent collections are not stored in the database cache (that caused `__PHP_Incomplete_Class` on `/`). Cleared on save/delete.
+- **SEO images:** New optional OG tags on `layout.blade.php`; city pages pass them. Other pages unchanged.
+
+### 13.6 Testing
+
+Covered in `CityPageTest`: create/publish/unpublish, unique slug, duplicate city name, templates, enabled/disabled sections, order, draft 404, preview auth, nav filter, stale nav cache, sitemap + meta, missing images / most sections off.
+
+### 13.7 Pending / recommended
+
+- Drag-and-drop section order (numeric order is in place).
+- ShowWhen hiding of inner fields when a section is OFF (fields stay visible in the CMS; OFF still hides them on the site).
+- No enquiry email still; products still not a CMS catalog.
+- After migrate, create the first city in **Content → Location / City Pages**, Preview, then Publish — **Location** appears in the public navbar.
+- Dummy published cities (Patna, Darbhanga, Muzaffarpur) are seeded by `CityPageSeeder`. The Location menu is hidden until at least one city is **Published**.
+
+### 13.8 How to try it
+
+1. `php artisan migrate` then `php artisan db:seed --class=CityPageSeeder`
+2. `/admin` as Admin → **Content → Location / City Pages → Create**
+3. City name e.g. Darbhanga, template Standard, keep default sections, **Draft**, save
+4. **Preview** — yellow banner, not in the public menu
+5. **Publish** (list check icon or Status = Published)
+6. Open `/location/darbhanga` and the **Location** dropdown
+7. Turn FAQ OFF, save, confirm the public page has no FAQ block
+

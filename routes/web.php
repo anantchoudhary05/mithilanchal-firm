@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminLogoutController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TinyMceImageUploadController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,8 @@ Route::get('/contact-us/thank-you', [ContactController::class, 'thankYou'])->nam
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
+Route::get('/location/{slug}', [LocationController::class, 'show'])->name('location.show');
+
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/robots.txt', function () {
@@ -50,6 +53,8 @@ Route::get('/cms/logout', AdminLogoutController::class)->name('cms.logout');
 Route::middleware(MoonShineAuthenticate::class)->group(function (): void {
     Route::get('/cms/blogs/{blog}/preview', [BlogController::class, 'preview'])
         ->name('cms.blogs.preview');
+    Route::get('/cms/locations/{cityPage}/preview', [LocationController::class, 'preview'])
+        ->name('cms.locations.preview');
     Route::post('/cms/tinymce/upload', TinyMceImageUploadController::class)
         ->name('cms.tinymce.upload');
 });

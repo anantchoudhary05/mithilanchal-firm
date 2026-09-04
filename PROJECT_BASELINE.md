@@ -787,6 +787,14 @@ Full file-by-file learning log: **`UPDATE_REPORT.md`**.
 - Tests: list shows S.No. and Export Excel; workbook has three sheets with the matching names; admin can download; author gets 403. Suite: 50 passing.
 - Still unused / still broken: no enquiry email/Mailable (mailer still `log`); product CMS; Vite on public pages; `link_attribute` UI; `assests` spelling.
 
+### 2026-09-04 — City Page / Location module
+
+- Why: Admins needed reusable city landing pages with template + per-section toggles, not a new Blade file per city.
+- Added: `city_pages` + `city_page_sections`; MoonShine **Content → Location / City Pages**; public `/location/{slug}` with three templates; Location dropdown; CMS preview; `CityPageTest`.
+- Changed (old → new): navbar had no Location item → dynamic published-city dropdown; layout SEO had no OG image → optional `og:image` / `og:title` / `og:description`; sitemap was static + blogs → also published cities.
+- Tests: `tests/Feature/CityPageTest.php`.
+- Still unused / still broken: no enquiry email; product CMS; Vite on public pages; `link_attribute` UI; `assests` spelling; section reorder is numeric, not drag-and-drop.
+
 ---
 
 ## 10. Line-count sense of “where the product code is”

@@ -6,6 +6,7 @@ namespace App\MoonShine\Layouts;
 
 use App\MoonShine\Pages\ProfilePage;
 use App\MoonShine\Resources\Blog\BlogResource;
+use App\MoonShine\Resources\CityPage\CityPageResource;
 use App\MoonShine\Resources\ContactLead\ContactLeadResource;
 use App\MoonShine\Resources\Homepage\HeroBannerResource;
 use App\MoonShine\Resources\Homepage\OfferPageResource;
@@ -220,6 +221,8 @@ CSS
             ])->canSee(static fn (mixed $item): bool => CmsUser::isAdmin()),
             MenuGroup::make('Content', [
                 MenuItem::make(BlogResource::class, CmsUser::isAuthor() ? 'My Blogs' : 'Blogs'),
+                MenuItem::make(CityPageResource::class, 'Location / City Pages')
+                    ->canSee(static fn (mixed $item): bool => CmsUser::isAdmin()),
             ]),
             MenuGroup::make('Homepage', [
                 MenuItem::make(HeroBannerResource::class, 'Banner pages'),

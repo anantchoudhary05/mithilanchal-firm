@@ -1,0 +1,963 @@
+/* =========================================================
+   City / Location pages + navbar dropdown
+========================================================= */
+
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: inherit;
+    cursor: pointer;
+}
+
+.nav-dropdown-toggle i {
+    font-size: 10px;
+    transition: transform 0.2s ease;
+}
+
+.nav-dropdown.is-open .nav-dropdown-toggle i,
+.nav-dropdown:hover .nav-dropdown-toggle i {
+    transform: rotate(180deg);
+}
+
+.nav-dropdown-toggle.active,
+.nav-dropdown.is-current .nav-dropdown-toggle {
+    color: var(--green);
+}
+
+.nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 14px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 220px;
+    max-width: min(420px, 80vw);
+    max-height: min(360px, 70vh);
+    overflow-y: auto;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    z-index: 1500;
+}
+
+.nav-dropdown-menu.is-wide {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    min-width: 340px;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu,
+.nav-dropdown.is-open .nav-dropdown-menu {
+    display: block;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu.is-wide,
+.nav-dropdown:focus-within .nav-dropdown-menu.is-wide,
+.nav-dropdown.is-open .nav-dropdown-menu.is-wide {
+    display: grid;
+}
+
+.nav-dropdown-menu a {
+    display: block;
+    padding: 10px 12px !important;
+    border-radius: 8px;
+    font-size: 14px !important;
+    white-space: nowrap;
+}
+
+.nav-dropdown-menu a::after {
+    display: none !important;
+}
+
+.nav-dropdown-menu a:hover,
+.nav-dropdown-menu a.active {
+    background: var(--light-green);
+    color: var(--green);
+}
+
+.city-page {
+    overflow-x: hidden;
+}
+
+.city-page .container {
+    width: min(1180px, calc(100% - 32px));
+    margin-inline: auto;
+}
+
+.city-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+    color: var(--green) !important;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.city-eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 2px;
+    background: currentColor;
+}
+
+.city-eyebrow--gold {
+    color: var(--gold) !important;
+}
+
+.city-section-head {
+    max-width: 720px;
+    margin: 0 auto 42px;
+    text-align: center;
+}
+
+.city-section-head h2,
+.city-about-copy h2,
+.city-faq-intro h2,
+.city-extra h2,
+.city-cta h2,
+.city-hero h1 {
+    margin: 0 0 14px;
+    line-height: 1.2;
+}
+
+.city-section-head p,
+.city-about-copy p,
+.city-faq-intro p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.city-highlight,
+.city-page--minimal .city-highlight {
+    color: var(--green);
+}
+
+.city-highlight-gold {
+    color: var(--gold-soft);
+}
+
+.city-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 10px 20px;
+    border-radius: 10px !important;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.city-btn--gold {
+    background: var(--gold) !important;
+    color: #111 !important;
+    border: 1px solid transparent !important;
+    box-shadow: 0 10px 24px rgba(201, 154, 53, 0.28);
+}
+
+.city-btn--ghost {
+    background: transparent !important;
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.55) !important;
+}
+
+.city-btn--green {
+    background: var(--dark-green) !important;
+    color: var(--gold) !important;
+    border: 0 !important;
+}
+
+.city-btn--wa {
+    background: #128c7e !important;
+    color: #fff !important;
+    border: 0 !important;
+}
+
+.city-btn--outline-gold {
+    background: transparent !important;
+    color: #7a4d00 !important;
+    border: 1px solid #c98912 !important;
+}
+
+.city-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.city-icon--solid {
+    background: var(--green);
+    color: #fff;
+}
+
+.city-icon--gold {
+    background: var(--gold);
+    color: var(--dark-green);
+}
+
+.city-icon--soft {
+    background: #f4efe3;
+    color: var(--dark-green);
+}
+
+.city-icon--muted {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--gold-soft);
+}
+
+/* Hero */
+.city-hero--plain {
+    padding: 48px 0 24px;
+}
+
+.city-hero--plain h1 {
+    margin-bottom: 0;
+}
+
+.city-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+    gap: 48px;
+    align-items: center;
+}
+
+.city-hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 18px;
+    padding: 8px 14px;
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.city-hero h1 {
+    color: #fff;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+}
+
+.city-hero-lead {
+    max-width: 52ch;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.city-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.city-hero-visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 360px;
+}
+
+.city-hero-ring {
+    position: absolute;
+    width: min(100%, 420px);
+    aspect-ratio: 1;
+    border: 1px dashed rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+}
+
+.city-hero-visual img {
+    width: min(100%, 360px);
+    height: min(100%, 360px);
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+}
+
+.city-hero-badge {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(12, 61, 21, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    color: #fff;
+}
+
+.city-hero-badge strong,
+.city-hero-badge span {
+    display: block;
+}
+
+.city-hero-badge span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+}
+
+.city-hero-badge--top { top: 18px; right: 0; }
+.city-hero-badge--bottom { bottom: 24px; left: 0; }
+
+/* Stats */
+.city-stats {
+    background: #08281c;
+    color: #fff;
+    padding: 28px 0;
+}
+
+.city-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    text-align: center;
+}
+
+.city-stat-value {
+    margin: 0;
+    color: var(--gold);
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.city-stat-label {
+    margin: 4px 0 0;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+/* About / highlights */
+.city-about,
+.city-highlights,
+.city-places,
+.city-services,
+.city-why,
+.city-nutrition,
+.city-gallery,
+.city-reviews,
+.city-faq,
+.city-extra {
+    padding: 72px 0;
+}
+
+.city-about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 56px;
+    align-items: center;
+}
+
+.city-about-media {
+    position: relative;
+}
+
+.city-about-photo img,
+.city-about-inset img,
+.city-place-card img,
+.city-gallery-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.city-about-photo {
+    margin: 0;
+    position: relative;
+}
+
+.city-ribbon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 8px 12px;
+    background: var(--gold);
+    color: #111;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 4px;
+}
+
+.city-about-inset {
+    position: absolute;
+    right: -24px;
+    bottom: -28px;
+    width: min(46%, 230px);
+    margin: 0;
+    box-shadow: var(--shadow);
+}
+
+.city-highlight-list {
+    display: grid;
+    gap: 0;
+}
+
+.city-highlight-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.city-highlight-row h3,
+.city-why-card h3,
+.city-nutrition-card h3,
+.city-service-card h3,
+.city-place-body h3,
+.city-process-step h3 {
+    margin: 0 0 6px;
+    color: var(--dark-green);
+    font-size: 1.05rem;
+}
+
+.city-highlight-row p,
+.city-why-card p,
+.city-nutrition-card p,
+.city-service-card p,
+.city-place-body p,
+.city-process-step p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.city-card-grid,
+.city-why-grid,
+.city-nutrition-grid,
+.city-review-grid,
+.city-gallery-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.city-card-grid,
+.city-why-grid,
+.city-review-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.city-nutrition-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.city-gallery-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.city-why {
+    background: #f7f3ea;
+}
+
+.city-why-card,
+.city-service-card,
+.city-place-card,
+.city-nutrition-card,
+.city-review-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px;
+}
+
+.city-why-card {
+    background: #f3eee4;
+    text-align: center;
+}
+
+.city-why-card.is-featured {
+    background: #fff;
+    box-shadow: var(--shadow);
+}
+
+.city-why-card .city-icon {
+    margin: 0 auto 14px;
+}
+
+.city-nutrition {
+    background: #f6f1e6;
+}
+
+.city-nutrition-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.city-process {
+    background: var(--dark-green);
+    color: #fff;
+    padding: 72px 0;
+}
+
+.city-section-head--light p {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.city-section-head--light h2 {
+    color: #fff;
+}
+
+.city-process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+}
+
+.city-process-step h3 {
+    color: #fff;
+}
+
+.city-process-step p {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.city-step-num {
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 12px;
+    background: var(--gold);
+    color: #111;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.city-place-card {
+    overflow: hidden;
+    padding: 0;
+}
+
+.city-place-card img {
+    height: 180px;
+    border-radius: 18px 18px 0 0;
+}
+
+.city-place-body {
+    padding: 18px 20px 22px;
+}
+
+.city-place-meta {
+    color: var(--green) !important;
+    font-size: 13px;
+    margin-bottom: 8px !important;
+}
+
+.city-gallery figure {
+    margin: 0;
+}
+
+.city-gallery figcaption {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.city-stars {
+    margin: 0 0 12px;
+    color: var(--gold);
+}
+
+.city-review-text {
+    font-style: italic;
+    color: var(--muted) !important;
+}
+
+.city-review-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.city-review-author img,
+.city-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.city-avatar {
+    display: grid;
+    place-items: center;
+    background: var(--dark-green);
+    color: #fff;
+    font-weight: 700;
+}
+
+.city-review-author cite {
+    font-style: normal;
+}
+
+.city-review-author span {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.city-faq {
+    background: #f6f1e6;
+}
+
+.city-faq-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 48px;
+    align-items: start;
+}
+
+.city-faq-item {
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 20px rgba(12, 61, 21, 0.05);
+}
+
+.city-faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 16px 20px;
+    font-weight: 700;
+}
+
+.city-faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.city-faq-item p {
+    margin: 0;
+    padding: 0 20px 16px;
+    color: var(--muted);
+}
+
+.city-extra-inner {
+    max-width: 760px;
+}
+
+.city-extra-body {
+    color: var(--muted);
+    line-height: 1.8;
+}
+
+.city-cta {
+    background: var(--dark-green);
+    color: #fff;
+    padding: 72px 0;
+    text-align: center;
+}
+
+.city-cta[style*="--city-cta-image"] {
+    background:
+        linear-gradient(rgba(8, 40, 28, 0.86), rgba(8, 40, 28, 0.86)),
+        var(--city-cta-image) center/cover;
+}
+
+.city-cta h2,
+.city-cta p {
+    color: #fff;
+}
+
+.city-cta-inner {
+    max-width: 760px;
+}
+
+.city-cta-actions {
+    justify-content: center;
+}
+
+.city-location-bar {
+    background: var(--gold);
+    padding: 22px 0;
+}
+
+.city-location-bar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.city-location-bar-title {
+    margin: 0 0 4px;
+    font-weight: 800;
+    color: #111;
+}
+
+.city-location-bar p {
+    margin: 0;
+    color: #3d2a00;
+}
+
+.city-location-bar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Template 2 — Modern */
+.city-page--modern .city-hero {
+    background:
+        radial-gradient(600px 280px at 90% 10%, rgba(201, 154, 53, 0.28), transparent 60%),
+        var(--dark-green);
+}
+
+.city-page--modern .city-hero-visual img {
+    border-radius: 28px;
+    width: min(100%, 420px);
+    height: 420px;
+}
+
+.city-page--modern .city-hero-ring {
+    border-radius: 36px;
+}
+
+.city-page--modern .city-why-grid,
+.city-page--modern .city-nutrition-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.city-page--modern .city-nutrition-card {
+    display: block;
+    text-align: left;
+}
+
+/* Template 3 — Minimal / SEO */
+.city-page--minimal .city-hero {
+    background: #fff;
+    color: var(--text);
+    padding: 48px 0 24px;
+}
+
+.city-page--minimal .city-hero-grid,
+.city-page--minimal .city-about-grid,
+.city-page--minimal .city-faq-grid {
+    grid-template-columns: 1fr;
+    max-width: 760px;
+    margin-inline: auto;
+}
+
+.city-page--minimal .city-hero-visual,
+.city-page--minimal .city-about-media,
+.city-page--minimal .city-hero-badge {
+    display: none;
+}
+
+.city-page--minimal .city-hero h1,
+.city-page--minimal .city-hero-lead,
+.city-page--minimal .city-hero-tag {
+    color: var(--text);
+}
+
+.city-page--minimal .city-hero-tag {
+    border-color: var(--green);
+    color: var(--green);
+}
+
+.city-page--minimal .city-btn--ghost {
+    color: var(--green) !important;
+    border-color: var(--green) !important;
+}
+
+.city-page--minimal .city-stats,
+.city-page--minimal .city-process,
+.city-page--minimal .city-cta {
+    background: #f7f3ea;
+    color: var(--text);
+}
+
+.city-page--minimal .city-stat-value,
+.city-page--minimal .city-section-head--light h2,
+.city-page--minimal .city-process-step h3,
+.city-page--minimal .city-cta h2,
+.city-page--minimal .city-cta p {
+    color: var(--dark-green);
+}
+
+.city-page--minimal .city-stat-label,
+.city-page--minimal .city-process-step p,
+.city-page--minimal .city-section-head--light p {
+    color: var(--muted);
+}
+
+.city-page--minimal .city-highlight-row,
+.city-page--minimal .city-why-card,
+.city-page--minimal .city-nutrition-card,
+.city-page--minimal .city-service-card {
+    background: transparent;
+    box-shadow: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.city-page--minimal .city-why-grid,
+.city-page--minimal .city-card-grid,
+.city-page--minimal .city-nutrition-grid,
+.city-page--minimal .city-review-grid,
+.city-page--minimal .city-process-grid,
+.city-page--minimal .city-stats-grid {
+    grid-template-columns: 1fr;
+}
+
+.city-page--minimal .city-section-head,
+.city-page--minimal .city-about,
+.city-page--minimal .city-highlights,
+.city-page--minimal .city-why,
+.city-page--minimal .city-nutrition,
+.city-page--minimal .city-reviews,
+.city-page--minimal .city-faq,
+.city-page--minimal .city-extra {
+    background: #fff;
+}
+
+@media (max-width: 1000px) {
+    .city-hero-grid,
+    .city-about-grid,
+    .city-faq-grid,
+    .city-process-grid,
+    .city-why-grid,
+    .city-review-grid,
+    .city-card-grid,
+    .city-page--modern .city-why-grid,
+    .city-page--modern .city-nutrition-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .city-stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .city-about-inset {
+        right: 12px;
+        bottom: -18px;
+    }
+}
+
+@media (max-width: 800px) {
+    .nav-dropdown {
+        width: 100%;
+    }
+
+    .nav-dropdown-toggle {
+        width: 100%;
+        justify-content: space-between;
+        padding: 14px 4px;
+        border-bottom: 1px solid #edf0e9;
+        font-size: 16px;
+    }
+
+    .nav-dropdown-menu,
+    .nav-dropdown-menu.is-wide {
+        position: static;
+        transform: none;
+        display: none;
+        min-width: 0;
+        max-width: none;
+        max-height: none;
+        margin: 0 0 8px;
+        padding: 0 0 8px 12px;
+        border: 0;
+        box-shadow: none;
+        background: transparent;
+        grid-template-columns: 1fr;
+    }
+
+    .nav-dropdown.is-open .nav-dropdown-menu,
+    .nav-dropdown.is-open .nav-dropdown-menu.is-wide {
+        display: grid;
+    }
+
+    .city-hero,
+    .city-about,
+    .city-highlights,
+    .city-places,
+    .city-services,
+    .city-why,
+    .city-process,
+    .city-nutrition,
+    .city-gallery,
+    .city-reviews,
+    .city-faq,
+    .city-extra,
+    .city-cta {
+        padding: 48px 0;
+    }
+
+    .city-hero-grid,
+    .city-about-grid,
+    .city-faq-grid,
+    .city-process-grid,
+    .city-why-grid,
+    .city-review-grid,
+    .city-card-grid,
+    .city-nutrition-grid,
+    .city-gallery-grid,
+    .city-stats-grid,
+    .city-page--modern .city-why-grid,
+    .city-page--modern .city-nutrition-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .city-hero-visual {
+        order: -1;
+    }
+
+    .city-about-inset {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        width: 70%;
+        margin-top: -40px;
+        margin-left: auto;
+    }
+
+    .city-location-bar-inner,
+    .city-hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .city-btn {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nav-dropdown-toggle i {
+        transition: none;
+    }
+}

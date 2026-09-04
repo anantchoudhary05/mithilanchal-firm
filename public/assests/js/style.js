@@ -36,9 +36,31 @@ if (menuToggle && nav) {
         link.addEventListener('click', () => setMenuOpen(false));
     });
 
+    nav.querySelectorAll('.nav-dropdown-toggle').forEach((button) => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const dropdown = button.closest('.nav-dropdown');
+            const willOpen = !dropdown?.classList.contains('is-open');
+
+            nav.querySelectorAll('.nav-dropdown').forEach((item) => {
+                item.classList.remove('is-open');
+                item.querySelector('.nav-dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+            });
+
+            if (dropdown && willOpen) {
+                dropdown.classList.add('is-open');
+                button.setAttribute('aria-expanded', 'true');
+            }
+        });
+    });
+
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             setMenuOpen(false);
+            nav.querySelectorAll('.nav-dropdown').forEach((item) => {
+                item.classList.remove('is-open');
+                item.querySelector('.nav-dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+            });
         }
     });
 
@@ -76,6 +98,11 @@ const revealSelector = [
     '.contact-grid > *',
     '.section-heading',
     '.cta .container',
+    '.city-why-card',
+    '.city-nutrition-card',
+    '.city-review-card',
+    '.city-process-step',
+    '.city-highlight-row',
     '.timeline-item',
     '.farmers-grid > *',
 ].join(',');

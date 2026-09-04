@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\CityPage;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
@@ -31,7 +32,19 @@ class SitemapController extends Controller
                 ])
                 ->all();
 
-            return array_merge($static, $posts);
+            $cities = CityPage::query()
+                ->published()
+                ->orderByDesc('updated_at')
+                ->get(['slug', 'updated_at'])
+                ->map(fn (CityPage $city) => [
+                    'loc' => route('location.show', $city->slug),
+                    'lastmod' => optional($city->updated_at)->toAtomString(),
+                    'changefreq' => 'weekly',
+                    'priority' => '0.8',
+                ])
+                ->all();
+
+            return array_merge($static, $posts, $cities);
         });
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n".view('sitemap', ['urls' => $urls])->render();

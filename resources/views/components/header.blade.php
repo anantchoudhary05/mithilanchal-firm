@@ -1,3 +1,5 @@
+@props(['locationCities' => null])
+
 <!-- =========================
      TOP BAR
 ========================= -->
@@ -40,6 +42,34 @@ NAVBAR
         <nav class="nav" id="nav">
             <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
             <a href="{{ route('Product') }}" class="{{ request()->routeIs('Product') ? 'active' : '' }}">Products</a>
+            @php
+                $locationCities = collect($locationCities ?? [])->filter();
+                if ($locationCities->isEmpty()) {
+                    $locationCities = \App\Models\CityPage::navCities();
+                }
+            @endphp
+            @if($locationCities->isNotEmpty())
+                <div class="nav-dropdown {{ request()->routeIs('location.*') ? 'is-current' : '' }}">
+                    <button
+                        class="nav-dropdown-toggle {{ request()->routeIs('location.*') ? 'active' : '' }}"
+                        type="button"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                    >
+                        Location
+                        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                    </button>
+                    <div class="nav-dropdown-menu {{ $locationCities->count() > 8 ? 'is-wide' : '' }}" role="menu">
+                        @foreach($locationCities as $navCity)
+                            <a
+                                href="{{ route('location.show', $navCity->slug) }}"
+                                class="{{ request()->routeIs('location.show') && request()->route('slug') === $navCity->slug ? 'active' : '' }}"
+                                role="menuitem"
+                            >{{ $navCity->city_name }}</a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
             <a href="{{ route('WhyChooseUs') }}" class="{{ request()->routeIs('WhyChooseUs') ? 'active' : '' }}">Why Choose Us</a>
             <a href="{{ route('OurStory') }}" class="{{ request()->routeIs('OurStory') ? 'active' : '' }}">Our Story</a>
             <a href="{{ route('blog.index') }}" class="{{ request()->routeIs('blog.*') ? 'active' : '' }}">Blog</a>

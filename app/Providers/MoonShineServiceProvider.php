@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\MoonShine\Resources\Blog\BlogResource;
+use App\MoonShine\Resources\CityPage\CityPageResource;
 use App\MoonShine\Resources\ContactLead\ContactLeadResource;
 use App\MoonShine\Resources\Homepage\HeroBannerResource;
 use App\MoonShine\Resources\Homepage\OfferPageResource;
@@ -25,6 +26,7 @@ class MoonShineServiceProvider extends ServiceProvider
             ->resources([
                 ContactLeadResource::class,
                 BlogResource::class,
+                CityPageResource::class,
                 HeroBannerResource::class,
                 OfferPageResource::class,
                 MoonShineUserResource::class,

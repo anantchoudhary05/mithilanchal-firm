@@ -7,6 +7,9 @@
     'robots' => 'index, follow',
     'custom_schema' => null,
     'og_type' => 'website',
+    'og_title' => null,
+    'og_description' => null,
+    'og_image' => null,
     'popupOffer' => null,
 ])
 @php
@@ -34,10 +37,13 @@
 
     <link rel="canonical" href="{{ $canonical_url ?? url()->current() }}">
 
-    <meta property="og:title" content="{{ $meta_title ?? $title ?? 'About Mithilanchal Farms | Premium Makhana from Bihar' }}">
-    <meta property="og:description" content="{{ $meta_description ?? 'Discover the story, farmers, heritage and quality commitment behind Mithilanchal Farms Private Limited.' }}">
+    <meta property="og:title" content="{{ $og_title ?? $meta_title ?? $title ?? 'About Mithilanchal Farms | Premium Makhana from Bihar' }}">
+    <meta property="og:description" content="{{ $og_description ?? $meta_description ?? 'Discover the story, farmers, heritage and quality commitment behind Mithilanchal Farms Private Limited.' }}">
     <meta property="og:type" content="{{ $og_type ?? 'website' }}">
     <meta property="og:url" content="{{ $canonical_url ?? url()->current() }}">
+    @if(!empty($og_image))
+        <meta property="og:image" content="{{ $og_image }}">
+    @endif
 
     <meta name="theme-color" content="#175c20">
 
@@ -53,6 +59,7 @@
     <link rel="stylesheet" href="{{ asset('assests/css/blog.css') }}">
     <link rel="stylesheet" href="{{ asset('assests/css/theme.css') }}">
     <link rel="stylesheet" href="{{ asset('assests/css/homepage.css') }}">
+    <link rel="stylesheet" href="{{ asset('assests/css/location.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     @if(!empty($custom_schema))
@@ -64,7 +71,7 @@
 
 <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <x-header />
+    <x-header :location-cities="$locationCities ?? \App\Models\CityPage::navCities()" />
 
     <main class="main" id="main-content">
         {{ $slot }}

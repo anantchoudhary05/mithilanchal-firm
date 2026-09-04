@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\CityPage;
 use App\Models\HomepageSection;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
@@ -25,11 +26,15 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
 
-        View::composer('components.layout', function ($view): void {
-            $view->with(
-                'popupOffer',
-                Schema::hasTable('homepage_sections') ? HomepageSection::activePopupOffer() : null,
-            );
+        View::composer(['components.layout', 'components.header'], function ($view): void {
+            if ($view->name() === 'components.layout') {
+                $view->with(
+                    'popupOffer',
+                    Schema::hasTable('homepage_sections') ? HomepageSection::activePopupOffer() : null,
+                );
+            }
+
+            $view->with('locationCities', CityPage::navCities());
         });
     }
 }
